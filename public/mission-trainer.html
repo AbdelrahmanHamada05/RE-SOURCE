@@ -4,8 +4,15 @@
   <meta charset="utf-8">
   <title>RE:SOURCE — Junior Astronaut Mission Trainer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+
   <style>
+    @font-face {
+      font-family: "Press Start 2P";
+      src: url("./fonts/PressStart2P-Regular.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
     :root {
       --bg-outer: #080a14;
       --ink: #1e1933;
@@ -3503,7 +3510,7 @@
     function onKey(e) {
       if (!running) return;
       if (["Enter", " ", "e", "E", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopImmediatePropagation(); next(); }
-      else if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); finish(); }
+      // Escape continues to the shared pause and exit handler.
     }
     const KID = { who: "kid", x: 70 }, TEA = { who: "teacher", x: 214, name: "Mr. Okafor" };
     const NAR = (bg, text, chars) => ({ bg, text, chars });
@@ -4840,12 +4847,28 @@
     }
 
     /* ----- MAIN MENU, PAUSE, SETTINGS & GUIDE ----- */
+    // Desktop builds quit through the narrow preload bridge; browsers show a close-tab reminder.
+    function requestExitGame() {
+      if (window.reSourceDesktop?.isDesktop) {
+        window.reSourceDesktop.quit();
+        return;
+      }
+      openModal(`
+        <div class="window narrow" style="text-align:center;">
+          <h2 style="font-size:13px;margin:0 0 8px 0;">Exit RE:SOURCE?</h2>
+          <p style="font-size:9.5px;line-height:1.8;">Close this browser tab to exit, or return to the Main Menu.</p>
+          <button class="btn" id="ex_back">Return to Main Menu</button>
+        </div>
+      `);
+      bindBtn("ex_back", openMainMenu);
+    }
     function openMainMenu() {
       GameController.setMode("menu");
       DialogueSystem.close(true);
       setPrompt("");
       updateHUD();
       const hasSave = GameState.hasSave();
+      const escapeMenu = window.reSourceDesktop?.settings?.escapeMenu || {};
 
       openModal(`
         <h1 class="game-logo">RE:SOURCE</h1>
@@ -4854,7 +4877,7 @@
           <button class="btn" id="mm_new">New Mission</button>
           <button class="btn" id="mm_cont" ${hasSave ? "" : "disabled"}>Continue Saved Mission</button>
           <button class="btn secondary" id="mm_guide">Mission Manual</button>
-          <button class="btn secondary" id="mm_exit">Exit</button>
+          <button class="btn secondary" id="mm_exit">${escapeMenu.exitLabel || "Exit Game"}</button>
         </div>
       `, "menu-overlay");
 
@@ -4916,29 +4939,20 @@
         bindBtn("gd_back", openMainMenu);
       });
 
-      bindBtn("mm_exit", () => {
-        openModal(`
-          <div class="window narrow" style="text-align:center;">
-            <h2 style="font-size:13px;margin:0 0 8px 0;">Exit RE:SOURCE?</h2>
-            <p style="font-size:9.5px;line-height:1.8;">
-              You can close this browser tab anytime, or return to the Main Menu.
-            </p>
-            <button class="btn" id="ex_back">Return to Main Menu</button>
-          </div>
-        `);
-        bindBtn("ex_back", openMainMenu);
-      });
+      bindBtn("mm_exit", requestExitGame);
     }
 
     function openPauseMenu() {
+      const escapeMenu = window.reSourceDesktop?.settings?.escapeMenu || {};
       openModal(`
         <div class="window narrow" style="text-align:center;">
           <h2 style="font-size:14px;margin:0 0 12px 0;">MISSION PAUSED</h2>
           <div class="menu-stack">
-            <button class="btn" id="p_resume">Resume</button>
-            <button class="btn secondary" id="p_settings">Settings</button>
-            <button class="btn secondary" id="p_save">Save Progress</button>
-            <button class="btn danger" id="p_menu">Main Menu</button>
+            <button class="btn" id="p_resume">${escapeMenu.resumeLabel || "Resume"}</button>
+            <button class="btn secondary" id="p_settings">${escapeMenu.settingsLabel || "Settings"}</button>
+            <button class="btn secondary" id="p_save">${escapeMenu.saveLabel || "Save Progress"}</button>
+            <button class="btn danger" id="p_menu">${escapeMenu.mainMenuLabel || "Main Menu"}</button>
+            <button class="btn secondary" id="p_exit">${escapeMenu.exitLabel || "Exit Game"}</button>
           </div>
         </div>
       `);
@@ -4950,6 +4964,7 @@
         closeModal();
         showToast(ok ? "Mission progress saved!" : "Unable to save.");
       });
+      bindBtn("p_exit", requestExitGame);
       bindBtn("p_menu", () => {
         closeModal();
         openMainMenu();
@@ -4981,7 +4996,7 @@
             <h3>Display & Controls</h3>
             <button class="btn secondary small" id="set_fs">Toggle Fullscreen</button>
             <p style="font-size:8.5px;line-height:1.8;margin:8px 0 0 0;">
-              <b>Arrows</b>: Walk | <b>Enter</b>: Interact / Advance | <b>Space</b>: Reveal Text | <b>Esc</b>: Pause / Close
+              <b>Arrows</b>: Walk | <b>Enter</b>: Interact / Advance | <b>Space</b>: Reveal Text | <b>Esc</b>: Pause, Main Menu, or Exit
             </p>
           </div>
 
@@ -4995,6 +5010,10 @@
       document.getElementById("set_vs").addEventListener("input", (e) => AudioEngine.setSfx(Number(e.target.value) / 100));
       bindBtn("set_test", () => AudioEngine.reserve());
       bindBtn("set_fs", () => {
+        if (window.reSourceDesktop?.toggleFullscreen) {
+          window.reSourceDesktop.toggleFullscreen();
+          return;
+        }
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         else document.documentElement.requestFullscreen().catch(() => {});
       });
@@ -5009,6 +5028,7 @@
       showToast,
       setPrompt,
       openMainMenu,
+      requestExitGame,
       openPauseMenu,
       openMachineTutorial,
       openWaterPanel,
@@ -5116,21 +5136,21 @@
         keys[e.key] = true;
         if (e.repeat) return;
 
-        if (DialogueSystem.isActive()) {
-          DialogueSystem.handleKey(e.key);
-          return;
-        }
-
-        if (e.key === "Escape" && mode === "play") {
-          if (UIManager.isModalOpen()) {
-            if (!UIManager.isSimBusy()) {
+        if (e.key === (window.reSourceDesktop?.settings?.escapeMenu?.key || "Escape")) {
+          e.preventDefault();
+          if (mode === "menu") {
+            UIManager.requestExitGame();
+          } else if (mode === "play") {
+            if (UIManager.isModalOpen()) {
+              if (!UIManager.isSimBusy()) { AudioEngine.click(); UIManager.closeModal(); }
+            } else {
               AudioEngine.click();
-              UIManager.closeModal();
+              UIManager.openPauseMenu();
             }
-          } else {
-            AudioEngine.click();
-            UIManager.openPauseMenu();
           }
+          return;
+        }        if (DialogueSystem.isActive()) {
+          DialogueSystem.handleKey(e.key);
           return;
         }
 

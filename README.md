@@ -33,11 +33,33 @@ The root layout in src/app/layout.tsx supplies the document metadata and global 
 
 The current Day 0 completion check requires all three crew conversations and inspection of at least three machines. The HUD tracks inspection progress across the five tutorial machines.
 
+## Full-screen desktop version (Windows)
+
+The project can also be packaged as a standalone Windows executable. It opens the canonical game fullscreen and hides the desktop menu bar. Use Escape while playing to open the pause menu. From there, Resume returns to play, Main Menu returns to the title screen, and Exit Game closes the desktop app. Escape from the title screen exits the desktop app. The browser version remains available at `/mission-trainer.html`; browsers may restrict closing their own tab, so its Exit Game action explains that limitation.
+
+To run the desktop app locally during development:
+
+    npm install
+    npm run desktop:dev
+
+To create the portable 64-bit Windows executable:
+
+    npm run desktop:package
+
+The output is written to `dist/desktop/RE-SOURCE-Mission-Trainer-0.1.0-x64.exe`. It can be shared as a single downloadable file; recipients do not need Node.js or a separate game installation. The `dist/desktop/` build output is excluded from Git. Published downloads are attached to GitHub Releases.
+
+Desktop wrapper details:
+
+- `desktop/main.cjs` creates the fullscreen Electron window, loads the canonical HTML game, handles app quit and fullscreen requests, and applies the window security settings.
+- `desktop/preload.cjs` exposes only the small desktop bridge needed by the game: app identity, settings, quit, and fullscreen toggle. The game page does not receive direct Node.js access.
+- `desktop/desktop-settings.json` controls the app title, initial window dimensions, fullscreen behavior, background color, and Escape menu labels. JSON does not support comments; the settings are documented here.
+- `package.json` defines `desktop:dev` and `desktop:package` and configures electron-builder to include the wrapper and public game assets in the portable executable.
+
 ## Controls and interface
 
 - Arrow keys move the astronaut through the rooms; movement is collision-checked against walls, furniture, and room bounds.
 - Enter opens the nearby object or machine. The interaction prompt also works with a pointer click.
-- Enter, Space, or Right Arrow advances dialogue; Escape can skip the opening sequence.
+- Enter, Space, or Right Arrow advances dialogue. In desktop play, Escape opens the pause menu; from the title screen it exits the app. In a browser, Escape opens the game pause or exit menu.
 - Machine dialogs show what a machine does, what goes in, what comes out, and when an output becomes available.
 - Queued inputs are reserved when an action is inserted. The pending-action dialog lets the player cancel queued work and refund its reserved costs.
 - The Crew Galley is immediate: consuming food or water restores stamina at once and cannot be undone.
@@ -139,11 +161,11 @@ For additional source comments, use JavaScript // or /* ... */ comments inside t
 
 ## Testing and build
 
-The verified production build command is:
+The production web build command is:
 
     npm run build
 
-The project also exposes npm run lint. Values in the game are fictional and should be tested as gameplay rules, not interpreted as engineering guidance.
+The project also exposes npm run lint. Values in the game are fictional and should be tested as gameplay rules, not interpreted as engineering guidance. The Windows packaging command is `npm run desktop:package`; see the desktop version section for output and sharing details.
 
 ## Project tree
 

@@ -1,0 +1,21 @@
+{
+  "appId": "com.resource.missiontrainer",
+  "appTitle": "RE:SOURCE — Junior Astronaut Mission Trainer",
+  "fullscreen": true,
+  "autoHideMenuBar": true,
+  "backgroundColor": "#090b18",
+  "window": {
+    "width": 1280,
+    "height": 720,
+    "minWidth": 960,
+    "minHeight": 640
+  },
+  "escapeMenu": {
+    "key": "Escape",
+    "resumeLabel": "Resume",
+    "settingsLabel": "Settings",
+    "saveLabel": "Save Progress",
+    "mainMenuLabel": "Main Menu",
+    "exitLabel": "Exit Game"
+  }
+}

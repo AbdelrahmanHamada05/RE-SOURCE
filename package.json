@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "desktop:dev": "electron .",
+    "desktop:package": "electron-builder --win portable --x64"
   },
   "dependencies": {
     "next": "16.4.6",
@@ -21,6 +23,32 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "electron": "45.3.2",
+    "electron-builder": "26.18.0"
+  },
+  "main": "desktop/main.cjs",
+  "build": {
+    "files": [
+      "desktop/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "RE-SOURCE-Mission-Trainer-${version}-${arch}.${ext}"
+    },
+    "productName": "RE-SOURCE Mission Trainer",
+    "appId": "com.resource.missiontrainer",
+    "directories": {
+      "output": "dist/desktop"
+    }
   }
 }
