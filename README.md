@@ -86,11 +86,11 @@ Food Points are a game unit; 1 FP is described as approximately 1,000 kcal. The 
 
 | Action | Inputs | Result | Timing |
 | --- | --- | --- | --- |
-| Recycle water | 3 kWh Power, 3% Stamina | +10 L Water | After end-day simulation |
-| Generate oxygen | 2.25 L Water, 6 kWh Power, 3% Stamina | +4 kg Oxygen | After end-day simulation |
-| Repair base | 10 kWh Power, 20% Stamina | +20% Base Integrity, capped at 100% | After end-day simulation |
-| Plant a crop | 8 L Water, 8 kWh Power, 20% Stamina, 1 Seed, 1 Nutrient pack | Starts a 3-day grow timer | After end-day simulation |
-| Harvest a mature crop | 23% Stamina | +15 FP Food; bed returns to Empty | After end-day simulation |
+| Recycle water | 3 kWh Power, 2.7% Stamina | +10 L Water | After end-day simulation |
+| Generate oxygen | 2.25 L Water, 6 kWh Power, 2.7% Stamina | +4 kg Oxygen | After end-day simulation |
+| Repair base | 10 kWh Power, 18% Stamina | +20% Base Integrity, capped at 100% | After end-day simulation |
+| Plant a crop | 8 L Water, 8 kWh Power, 18% Stamina, 1 Seed, 1 Nutrient pack | Starts a 3-day grow timer | After end-day simulation |
+| Harvest a mature crop | 20.7% Stamina | +15 FP Food; bed returns to Empty | After end-day simulation |
 | Eat a ration | 2 FP Food | +3% Stamina | Immediate |
 | Drink water | 2 L Water | +3% Stamina | Immediate |
 
