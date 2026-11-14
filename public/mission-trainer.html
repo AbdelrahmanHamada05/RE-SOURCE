@@ -903,7 +903,7 @@
         machineName: "Water Recycling Machine",
         description: "Filters and distills cabin wastewater to recover clean potable water.",
         requiresPower: true,
-        costs: { power: 3, stamina: 3 },
+        costs: { power: 3, stamina: 2.7 },
         outputText: "+10 L Water (available after simulation)",
         tutorialWhen: "Added to Water reserves after clicking SIMULATE / END DAY."
       },
@@ -913,7 +913,7 @@
         machineName: "Base Integrity Console",
         description: "Reinforces hull seals, micrometeorite shielding, and life-support conduits.",
         requiresPower: true,
-        costs: { power: 10, stamina: 20 },
+        costs: { power: 10, stamina: 18 },
         outputText: "+20% Base Integrity (max 100%, after simulation)",
         tutorialWhen: "Restores +20% Base Integrity after clicking SIMULATE / END DAY."
       },
@@ -923,7 +923,7 @@
         machineName: "Hydroponic Greenhouse",
         description: "Plants lunar crop seedlings in nutrient-enriched mist. Takes 3 full days to mature.",
         requiresPower: true,
-        costs: { water: 8, power: 8, stamina: 20, seeds: 1, nutrients: 1 },
+        costs: { water: 8, power: 8, stamina: 18, seeds: 1, nutrients: 1 },
         cropGrowthDays: 3,
         outputText: "Starts 3-day crop growth timer (no immediate FP)",
         tutorialWhen: "Matures after 3 completed in-game days, then requires Harvest Food."
@@ -934,7 +934,7 @@
         machineName: "Hydroponic Greenhouse",
         description: "Harvests mature lunar crops into nutritious 1,000 kcal Food Points (FP).",
         requiresPower: false,
-        costs: { stamina: 23 },
+        costs: { stamina: 20.7 },
         outputText: "+15 FP Food (after simulation; resets bed to Empty)",
         tutorialWhen: "Available once a planted crop reaches Mature status."
       },
@@ -944,7 +944,7 @@
         machineName: "Oxygen Generator",
         description: "Splits purified water via electrolysis to replenish breathable cabin oxygen.",
         requiresPower: true,
-        costs: { water: 2.25, power: 6, stamina: 3 },
+        costs: { water: 2.25, power: 6, stamina: 2.7 },
         outputText: "+4 kg Oxygen (available after simulation)",
         tutorialWhen: "Added to Oxygen reserves after clicking SIMULATE / END DAY."
       }
@@ -2959,7 +2959,7 @@
           onInteract: () => DialogueSystem.open({
             speaker: "Engineer", portrait: "engineer",
             lines: [
-              "Each Water Recycling cycle costs 3 kWh Power and 3% Stamina, producing +10 L Water after simulation.",
+              "Each Water Recycling cycle costs 3 kWh Power and 2.7% Stamina, producing +10 L Water after simulation.",
               "Remember: our crew of four consumes 15.14 L of water every single day!"
             ]
           })
@@ -3012,8 +3012,8 @@
           onInteract: () => DialogueSystem.open({
             speaker: "Scientist", portrait: "scientist",
             lines: [
-              "Planting takes 8 L Water, 8 kWh Power, 20% Stamina, 1 Seed, and 1 Nutrient Pack.",
-              "Crops take 3 completed days to mature, then Harvest Food (23% Stamina) yields +15 FP (15,000 kcal)!"
+              "Planting takes 8 L Water, 8 kWh Power, 18% Stamina, 1 Seed, and 1 Nutrient Pack.",
+              "Crops take 3 completed days to mature, then Harvest Food (20.7% Stamina) yields +15 FP (15,000 kcal)!"
             ]
           })
         },
@@ -3094,7 +3094,7 @@
             speaker: "Atmosphere Monitor",
             lines: [
               `Oxygen Reserves: ${fmt(GameState.get().res.oxygen)} / 50 kg. Crew consumes 3.32 kg/day.`,
-              "Electrolysis converts 2.25 L Water + 6 kWh Power + 3% Stamina into +4 kg Oxygen."
+              "Electrolysis converts 2.25 L Water + 6 kWh Power + 2.7% Stamina into +4 kg Oxygen."
             ]
           })
         },
@@ -3715,9 +3715,9 @@
         portrait: "engineer",
         lines: [
           "\"Welcome back! Quick refresher. Every machine needs some inputs, like power or water, and gives you something useful in return.\"",
-          "\"The Water Recycler cleans used water. Put in 3 kWh of Power and 3% Stamina, and you get 10 L of Water.\"",
-          "\"The Oxygen Generator splits water to make air. It takes 2.25 L of Water, 6 kWh of Power and 3% Stamina, and gives 4 kg of Oxygen.\"",
-          "\"Solar panels add 25 kWh a day, but the base uses 10. That leaves +15 kWh. The Repair Unit costs 10 kWh and 20% Stamina, and restores 20% Base Integrity.\"",
+          "\"The Water Recycler cleans used water. Put in 3 kWh of Power and 2.7% Stamina, and you get 10 L of Water.\"",
+          "\"The Oxygen Generator splits water to make air. It takes 2.25 L of Water, 6 kWh of Power and 2.7% Stamina, and gives 4 kg of Oxygen.\"",
+          "\"Solar panels add 25 kWh a day, but the base uses 10. That leaves +15 kWh. The Repair Unit costs 10 kWh and 18% Stamina, and restores 20% Base Integrity.\"",
           "\"Tip: inserted inputs are set aside right away. Changed your mind? Press Take back and you get everything back.\""
         ]
       });
@@ -3732,8 +3732,8 @@
         portrait: "scientist",
         lines: [
           "\"Hi there! Let me explain the greenhouse. Plants grow in a mist of water and nutrients. No soil needed.\"",
-          "\"To plant, insert 8 L of Water, 8 kWh of Power, 20% Stamina, 1 Seed and 1 Nutrient pack. Then wait 3 full days.\"",
-          "\"When the crop is ripe, harvesting costs 23% Stamina and gives 15 Food Points. One Food Point is about 1,000 calories.\"",
+          "\"To plant, insert 8 L of Water, 8 kWh of Power, 18% Stamina, 1 Seed and 1 Nutrient pack. Then wait 3 full days.\"",
+          "\"When the crop is ripe, harvesting costs 20.7% Stamina and gives 15 Food Points. One Food Point is about 1,000 calories.\"",
           "\"Our crew of four uses roughly 15 L of Water, 3.3 kg of Oxygen and 12 Food Points every day. Keep every bar above zero!\"",
           "\"When you're tired, visit the Galley. 2 Food or 2 L of Water gives you +3% Stamina right away.\""
         ]
