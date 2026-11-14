@@ -240,6 +240,89 @@ button { color: inherit; }
 .astronaut-leg { z-index: 1; top: 29px; width: 7px; height: 9px; border: 2px solid #e5e0d0; background: #87979b; box-shadow: 0 2px #26334a; }
 .leg-left { left: 9px; }
 .leg-right { left: 19px; }
+.bed-sleep-button { position: absolute; z-index: 8; top: 61%; left: 43%; min-width: 14%; padding: 10px; border: 2px solid #f1cf7c; background: #101827eF; color: #ffe5a3; font: 7px var(--pixel); box-shadow: 3px 3px #090d16; cursor: pointer; }
+.sleep-dialogue-button { margin-top: 8px; }
+.ship-shell { min-height: calc(100dvh - 28px); }
+.ship-status { gap: 10px; }
+.ship-layout { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(265px, .8fr); gap: 12px; padding-top: 12px; }
+.ship-map { height: clamp(430px, 61vh, 590px); position: relative; overflow: hidden; border: 4px solid #596b83; background: #27334a; box-shadow: inset 0 0 0 4px #1a263b, 0 5px #101725; }
+.ship-window { position: absolute; z-index: 1; inset: 0 0 auto; height: 22%; display: flex; align-items: center; justify-content: space-around; border-bottom: 7px solid #172238; background: linear-gradient(#1b2438,#394a67); color: #a9c5de; }
+.ship-window span { width: 31%; height: 66%; display: grid; place-items: center; border: 6px solid #596c82; background: radial-gradient(circle at 65% 35%,#edf0db 0 2%,transparent 2.5%),radial-gradient(circle at 36% 60%,#a5c7e0 0 8%,transparent 9%),#101a2d; color: #f3d893; font-size: 24px; }
+.ship-window b { color: #f3d38a; font-size: 6px; }
+.ship-window i { width: 25%; color: #e1e6ec; font: normal 8px var(--pixel); text-align: center; }
+.ship-floor { position: absolute; inset: 22% 0 0; background-color: #303c54; background-image: linear-gradient(90deg,transparent 49%,#222e4511 49% 51%,transparent 51%),linear-gradient(transparent 49%,#222e4511 49% 51%,transparent 51%); background-size: 54px 54px; }
+.ship-console,.ship-cot { position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 4px solid #1b263a; background: #526981; box-shadow: inset 0 0 0 4px #879aab,4px 4px #121a2a; color: #f1d38d; }
+.ship-console i,.ship-cot i { font: normal 4px var(--pixel); }
+.ship-pilot-console { top: 25%; left: 40%; width: 20%; height: 10%; }
+.ship-pilot-console b { color: #69d4cb; font-size: 12px; }
+.ship-cot { top: 39%; width: 13%; height: 8%; background: #715648; }
+.ship-cot-left { left: 5%; }.ship-cot-right { right: 5%; }
+.ship-cot b { color: #b1d2d8; font-size: 12px; }
+.ship-machine { position: absolute; z-index: 3; transform: translate(-50%,-50%); width: clamp(62px,9.3vw,88px); min-height: 57px; padding: 6px 3px 4px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; border: 4px solid #1b2639; outline: 2px solid #8799ac; background: #718999; color: #dce8ed; box-shadow: inset 0 0 0 4px #9db1ba,4px 4px #121a2a; cursor: pointer; }
+.ship-machine::before { content: ''; position: absolute; inset: 8px 13px 22px; border: 3px solid #33445e; background: #172135; }
+.ship-machine b { z-index: 1; margin-top: 2px; color: #76ddc2; font-size: 11px; }
+.ship-machine span { z-index: 1; width: 100%; padding: 3px 1px; background: #131d30; font-size: 4px; line-height: 1.7; text-align: center; }
+.ship-machine-greenhouse { background: #6b593d; }.ship-machine-greenhouse::before { inset: 4px 8px 24px; border: 0; background: repeating-linear-gradient(90deg,#4bc27d 0 7px,#2d7d5b 7px 12px); box-shadow: 0 -3px #b1df76; }
+.ship-machine-repair,.ship-machine-terminal { background: #65516a; }
+.ship-machine-selected,.ship-machine:hover { outline-color: #f4d178; transform: translate(-50%,-50%) scale(1.06); }
+.ship-visited { border-color: #6dcba9; }
+.ship-npc { position: absolute; z-index: 4; transform: translate(-50%,-50%); min-width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 0; background: transparent; cursor: pointer; }
+.ship-npc > span:last-child { max-width: 104px; padding: 4px; background: #111a2beF; color: #d9e5ed; font: 4px/1.7 var(--pixel); text-align: center; white-space: nowrap; }
+.ship-astronaut { position: relative; display: block; width: 32px; height: 40px; }
+.ship-astronaut i { position: absolute; display: block; image-rendering: pixelated; }
+.ship-pack { z-index: 0; top: 14px; left: 1px; width: 8px; height: 16px; border: 2px solid #c8cfd0; background: #4d6982; box-shadow: -2px 2px #182339; }
+.ship-helmet { z-index: 2; top: 0; left: 7px; width: 20px; height: 18px; border: 3px solid #f1ead5; background: #9ec4ce; box-shadow: inset 0 0 0 2px #465878,2px 2px #182339; }
+.ship-helmet b { position: absolute; top: 4px; left: 4px; width: 9px; height: 5px; background: #37d1d6; box-shadow: 0 2px #267d9b; }
+.ship-suit { z-index: 1; top: 17px; left: 8px; width: 18px; height: 13px; border: 3px solid #e8e5d4; box-shadow: inset 0 -4px #465878; }
+.ship-suit::after { content: ''; position: absolute; top: 3px; left: 4px; width: 5px; height: 3px; background: #eecb75; }
+.ship-leg { z-index: 1; top: 29px; width: 7px; height: 9px; border: 2px solid #e5e0d0; background: #87979b; box-shadow: 0 2px #26334a; }
+.ship-leg-left { left: 9px; }.ship-leg-right { left: 19px; }
+.ship-player { position: absolute; z-index: 5; transform: translate(-50%,-50%); width: 32px; height: 40px; transition: left .08s linear,top .08s linear; }
+.ship-commander .ship-helmet { border-color: #f0d28b; }
+.ship-thought { position: absolute; z-index: 8; top: 75%; left: 50%; transform: translateX(-50%); width: min(320px,75%); padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; border: 2px solid #e5e6df; background: #171d2cF2; color: #f3f0e6; box-shadow: 4px 4px #0c111b; font-size: 5px; line-height: 1.9; text-align: center; }
+.ship-thought b { color: #f1c86e; }.ship-thought small { color: #91a4ba; font-size: 4px; }
+.ship-map-help { position: absolute; z-index: 6; bottom: 7px; left: 50%; transform: translateX(-50%); width: max-content; max-width: 96%; padding: 7px; border: 1px solid #697995; background: #111827eF; color: #c1cee0; font-size: 4px; text-align: center; white-space: nowrap; }
+.ship-map-help i { padding: 0 4px; color: #f1c86e; font-style: normal; }
+.ship-sidebar { display: flex; flex-direction: column; gap: 9px; }
+.ship-card { position: relative; padding: 12px; border: 2px solid #586884; background: #171d2c; box-shadow: 3px 3px #101725; }
+.ship-card h2 { margin: 0 0 9px; color: #f0d38c; font-size: 6px; }
+.ship-card p { margin: 7px 0; color: #d1dbe4; font-size: 5px; line-height: 2; }
+.ship-check-row { margin-top: 10px; padding-top: 8px; display: flex; justify-content: space-between; border-top: 1px solid #36445a; color: #8edbc4; font-size: 5px; }
+.ship-progress { min-height: 19px; display: flex; align-items: center; gap: 7px; color: #c9d5e1; font-size: 4px; }
+.ship-progress i { width: 13px; height: 13px; display: grid; place-items: center; border: 1px solid #536680; color: #7e91a9; font: normal 6px var(--pixel); }
+.ship-progress i.checked { border-color: #6dcba9; color: #8fe2c4; }
+.ship-cost { margin: 8px 0; padding: 8px; display: grid; grid-template-columns: 1fr; gap: 5px; border: 1px solid #3b4a61; background: #111827; }
+.ship-cost span { color: #8498b2; font-size: 4px; }.ship-cost b { color: #ebd18e; font-size: 5px; line-height: 1.8; }
+.ship-no-run { padding: 7px; border: 1px solid #4a786d; background: #172d2b; color: #aee6d3 !important; }
+.ship-primary,.ship-time-skip { width: 100%; padding: 10px; border: 1px solid #75cdb5; background: #17372f; color: #bcf1df; font: 6px var(--pixel); cursor: pointer; }
+.ship-warning { padding: 8px; border: 1px solid #806b45; color: #e8c979; font-size: 4px; line-height: 1.8; text-align: center; }
+.ship-time-skip { margin-top: auto; min-height: 42px; background: #263a50; border-color: #a5c9e5; color: #e1f2ff; font-size: 7px; }
+.ship-time-skip b { float: right; color: #f2cf7c; }
+.landing-scene { min-height: clamp(480px,67vh,650px); position: relative; overflow: hidden; margin-top: 12px; border: 3px solid #667993; background: radial-gradient(ellipse at 50% 45%,#24334f 0,#101a30 70%,#09111e 100%); }
+.landing-window { position: absolute; inset: 0 0 36%; overflow: hidden; border-bottom: 10px solid #536781; background: radial-gradient(circle at 13% 24%,#fff 0 1px,transparent 2px),radial-gradient(circle at 34% 56%,#b7cde4 0 1px,transparent 2px),radial-gradient(circle at 74% 27%,#fff 0 1px,transparent 2px),radial-gradient(circle at 88% 66%,#b7cde4 0 1px,transparent 2px),linear-gradient(#121d34,#354762); }
+.landing-window span { position: absolute; top: 20%; left: 12%; width: 70px; height: 70px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(circle at 35% 30%,#c6e0f2,#5b79a9 72%); color: transparent; box-shadow: 0 0 25px #83a6c7; }
+.landing-window i { position: absolute; top: 45%; left: 52%; color: #cbd0c7; font-size: 65px; font-style: normal; text-shadow: 0 0 20px #f1d28b55; transition: transform 1s ease; }
+.landing-window b { position: absolute; bottom: 12%; left: 50%; transform: translateX(-50%); color: #8be1cb; font-size: 6px; white-space: nowrap; }
+.landing-ship { position: absolute; top: 52%; left: 50%; color: #f1d28b; font: normal 23px var(--pixel); text-shadow: 0 0 15px #f1d28b; transition: left 1s,top 1s,transform 1s; }
+.landing-step-1 .landing-ship { left: 54%; top: 61%; transform: scale(1.2); }
+.landing-step-2 .landing-ship { left: 57%; top: 74%; transform: scale(1.7); }
+.landing-caption { position: absolute; inset: auto 0 0; min-height: 35%; padding: 22px; border-top: 4px solid #28364d; background: #131b2cf5; }
+.landing-caption small { color: #84cdbb; font-size: 5px; }.landing-caption h1 { margin: 10px 0; color: #f2d080; font-size: 10px; }.landing-caption p { max-width: 740px; color: #d0dae4; font-size: 6px; line-height: 2.1; }
+.landing-progress { height: 8px; margin-top: 15px; border: 1px solid #5c7189; background: #0d1421; }.landing-progress i { height: 100%; display: block; background: #70d0b8; transition: width 1.3s; }
+@media (max-width: 700px) {
+  .bed-sleep-button { left: 40%; width: 20%; font-size: 5px; }
+  .ship-layout { grid-template-columns: 1fr; }
+  .ship-map { height: 52vh; min-height: 370px; }
+  .ship-sidebar { display: grid; grid-template-columns: 1fr; }
+  .ship-machine { width: 62px; min-height: 52px; }
+  .ship-npc { min-width: 56px; }
+  .ship-npc > span:last-child { max-width: 72px; font-size: 3px; }
+  .ship-window b,.ship-window i { font-size: 4px; }
+  .ship-map-help { font-size: 3px; }
+  .landing-scene { min-height: 65vh; }
+  .landing-caption { padding: 14px; }
+  .landing-caption h1 { font-size: 7px; }
+}
 @media (max-width: 650px) {
   .window-wall { height: 20%; }
   .window-wall span { width: 22%; border-width: 4px; font-size: 6px; }

@@ -1,10 +1,10 @@
-# ASTRA — Junior Astronaut Mission Trainer
+# RE:SOURCE — Junior Astronaut Mission Trainer
 
-**ASTRA** is a 2D top-down, pixel-art lunar-outpost management RPG designed to introduce children aged **7–12** to the challenges of living and working on the Moon.
+**RE:SOURCE** is a 2D top-down, pixel-art lunar-outpost management RPG designed to introduce children aged **7–12** to the challenges of living and working on the Moon.
 
 Players explore a lunar base, interact with its crew and equipment, make mission decisions, and keep the outpost operational through a **7-day simulated mission**.
 
-> **Project note:** ASTRA is an educational game. Its seven-day mission, resource reserves, action costs, event effects, and failure thresholds are gameplay abstractions—not an official NASA mission plan or a validated life-support design.
+> **Project note:** RE:SOURCE is an educational game. Its seven-day mission, resource reserves, action costs, event effects, and failure thresholds are gameplay abstractions—not an official NASA mission plan or a validated life-support design.
 
 ## Game concept
 
@@ -15,7 +15,7 @@ Players explore a lunar base, interact with its crew and equipment, make mission
 - Manage water, oxygen, food, power, crew stamina, and base integrity.
 - Respond to unexpected events and complete the seven-day mission.
 
-The experience takes inspiration from the exploration and dialogue style of 2D RPGs while using an original ASTRA setting, characters, and gameplay.
+The experience takes inspiration from the exploration and dialogue style of 2D RPGs while using an original RE:SOURCE setting, characters, and gameplay.
 
 ## Mission structure
 
@@ -136,7 +136,7 @@ The project may use public educational and scientific resources to inform its le
 - [NASA Lunar Surface Innovation Initiative](https://www.nasa.gov/lunar-surface-technology/)
 - [Canadian Space Agency — Food Production Toolkit](https://www.asc-csa.gc.ca/eng/youth-educators/toolkits/food-production/)
 
-**Scientific integrity:** NASA/ISS data and educational references provide context; they do not automatically validate ASTRA's lunar scenarios or gameplay parameters. ISS radiation measurements are not lunar-surface exposure measurements, space-weather classifications are not direct astronaut dose measurements, and educational crop examples are not guaranteed lunar crop yields. The game should distinguish sourced reference information, engineering assumptions, and invented gameplay values.
+**Scientific integrity:** NASA/ISS data and educational references provide context; they do not automatically validate RE:SOURCE's lunar scenarios or gameplay parameters. ISS radiation measurements are not lunar-surface exposure measurements, space-weather classifications are not direct astronaut dose measurements, and educational crop examples are not guaranteed lunar crop yields. The game should distinguish sourced reference information, engineering assumptions, and invented gameplay values.
 
 ## Getting started
 
@@ -158,7 +158,7 @@ Edit `src/app/page.tsx` to start changing the application. The page updates as y
 
 ## Project status
 
-ASTRA is under development. The seven-day mission structure and resource model are design proposals that require implementation, simulation, and playtesting.
+RE:SOURCE is under development. The seven-day mission structure and resource model are design proposals that require implementation, simulation, and playtesting.
 
 ---
 

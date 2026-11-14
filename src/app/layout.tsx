@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'ASTRA — The First Orbit',
-  description: 'ASTRA is an early game prototype for testing gameplay parameters. Its fictional values are not NASA-validated.',
+  title: 'RE:SOURCE — Junior Astronaut Mission Trainer',
+  description: 'RE:SOURCE is an educational lunar mission game. Mission events and resource values are simulated, not NASA measurements.',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
