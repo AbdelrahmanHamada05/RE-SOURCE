@@ -4805,7 +4805,7 @@
             Final Telemetry — Water: ${fmt(s.res.water)} L | Oxygen: ${fmt(s.res.oxygen)} kg | Food: ${fmt(s.res.food)} FP | Power: ${fmt(s.res.power)} kWh | Integrity: ${fmt(s.res.integrity)}%
           </p>
           <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;">
-            ${!isVictory ? `<button class="btn good" id="out_retry">TRY AGAIN — RESTART DAY 1</button>` : ""}
+            ${!isVictory ? `<button class="btn good" id="out_retry" type="button" style="position:relative;z-index:2;pointer-events:auto">TRY AGAIN — RESTART DAY 1</button>` : ""}
             ${!isVictory && GameState.hasSave() ? `<button class="btn secondary" id="out_load">Load Last Auto-Save</button>` : ""}
             <button class="btn" id="out_menu">Return to Main Menu</button>
           </div>
