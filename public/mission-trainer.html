@@ -3324,6 +3324,7 @@
       rect("rgba(255,255,255,.1)", x + 3, y + 3, 6, h - 6);
     }
     // Draw a bright two-pane classroom window, including sky, clouds, grass, and wooden dividers.
+    function dayWindow(x, y, w, h) {
       rect("#8a6a48", x - 3, y - 3, w + 6, h + 6);
       cx.save(); cx.beginPath(); cx.rect(x, y, w, h); cx.clip();
       sky("#7ec4f5", "#e2f4ff", y + h);
@@ -3397,6 +3398,7 @@
     };
     function sprite(k) { return PixelArt.sprites[k]; }
     // Paint a compact story character from pixel rectangles; kind selects the student or teacher palette.
+    function chibi(kind, x, b) {
       const R = (c, dx, dy, w, h) => rect(c, x + dx, b + dy, w, h);
       const rr = (c, dx, dy, w, h) => { R(c, dx + 1, dy, w - 2, h); R(c, dx, dy + 1, w, h - 2); };
       const T = kind === "teacher", O = "#181228";
@@ -3443,6 +3445,7 @@
     }
     const CH_OFF = document.createElement("canvas"); CH_OFF.width = 80; CH_OFF.height = 90;
     // Draw one story character and visually emphasize the current speaker.
+    function drawChar(c, speaker) {
       if (c.who !== "teacher") {
         const spr = PixelArt.sprites.kid_right_idle;
         if (spr) {
@@ -4314,6 +4317,7 @@
 
     /* ----- SIMPLE MACHINE MENU (one friendly layout for every machine) ----- */
     // Shared kid-friendly labels connect each machine to its input costs, output, and survival purpose.
+    const MACHINE_INFO = {
       water: {
         icon: "mach_water", title: "Water Recycling Machine", action: "recycleWater",
         does: "Cleans used water so the crew can drink it again.",
@@ -4347,10 +4351,12 @@
     };
 
     // Convert resource descriptions into consistent menu chips, highlighting shortages and outputs.
+    function mmChips(list) {
       return list.map((i) => `<div class="mm-chip ${i.short ? "short" : ""} ${i.out ? "out" : ""}">${i.icon ? PixelArt.iconImg(i.icon, 16, 16) : `<span class="mm-dot"></span>`}<b>${i.text}</b>${i.have ? `<em>${i.have}</em>` : ""}</div>`).join("");
     }
 
     // Format action costs; tutorial mode omits live inventory while machine mode shows amounts and shortages.
+    function mmCosts(spec, s, bare) {
       return Object.entries(spec.costs).map(([k, v]) => {
         if (k === "seeds" || k === "nutrients") {
           const t = `${v} ${k === "seeds" ? "Seed" : "Nutrient pack"}`;
@@ -4363,6 +4369,7 @@
     }
 
     // Render the shared machine dialog and reconnect its action, refund, alternate-bed, and close controls.
+    function openMachineMenu(c) {
       const s = GameState.get();
       const btns = (c.buttons || []).map((b, n) => `<button class="btn mm-big" id="mm_b${n}" ${b.disabled ? "disabled" : ""}>${b.label}</button>`).join("");
       const insHtml = (c.inserted || []).map((q) => `<div class="mm-inserted"><span>&#10004; Inputs inserted</span><button class="btn danger small" data-take="${q.queueId}">Take back</button></div>`).join("");
@@ -4411,6 +4418,7 @@
 
     /* ----- DAY 0 SPACECRAFT MACHINE TUTORIAL MODAL ----- */
     // Record a Day 0 inspection and show a read-only explanation; the tutorial never spends resources.
+    function openMachineTutorial(tutKey) {
       const s = GameState.get();
       s.storyFlags.inspectedMachines[tutKey] = true;
       updateHUD();
@@ -4440,6 +4448,7 @@
 
     /* ----- WATER / OXYGEN / REPAIR ----- */
     // Show queued water, oxygen, or repair work with its reserved inputs and offline status.
+    function openQueuedMachinePanel(actionId, msg = "", err = false) {
       const s = GameState.get(), spec = CONFIG.actions[actionId];
       const key = { recycleWater: "water", generateOxygen: "oxygen", repairBase: "repair" }[actionId];
       const info = MACHINE_INFO[key];
@@ -4459,6 +4468,7 @@
 
     /* ----- GREENHOUSE ----- */
     // Explain the selected grow bed and offer plant, harvest, or switch-bed actions based on crop state.
+    function openGreenhousePanel(bedIndex, msg = "", err = false) {
       const s = GameState.get(), bed = s.cropBeds[bedIndex], info = MACHINE_INFO.greenhouse;
       const aid = bed.status === "Empty" ? "growFood" : bed.status === "Mature" ? "harvestFood" : null;
       const ins = s.pendingQueue.filter((q) => q.bedIndex === bedIndex);
@@ -4484,6 +4494,7 @@
 
     /* ----- CREW GALLEY (instant) ----- */
     // Offer an immediate food or water choice that restores stamina without entering the end-day queue.
+    function openGalleyPanel(msg = "", err = false) {
       const s = GameState.get(), info = MACHINE_INFO.galley;
       openMachineMenu({
         icon: info.icon, title: info.title, does: info.does, why: info.why, msg, err,
