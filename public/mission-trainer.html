@@ -790,6 +790,20 @@
     #vn .vcard{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:#05060f;text-align:center}
     #vn .vcard h1{margin:0;font-size:56px;color:#ffd466;letter-spacing:4px;text-shadow:0 6px 0 #e06a34,0 0 40px rgba(255,212,102,.4)}
     #vn .vcard p{margin:0;font-size:15px;color:#b9c6e8;line-height:1.8}
+    /* Machine-menu styles: chips show inputs/outputs; status and tip blocks explain each machine. */
+    .mm-does{font-size:10px;line-height:1.8;margin:0 0 10px}
+    .mm-cols{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}
+    .mm-chip{display:flex;align-items:center;gap:8px;padding:7px 9px;margin:6px 0;background:#fff;border:2px solid var(--border-dark);font-size:10px;line-height:1.4}
+    .mm-chip b{font-weight:400;flex:1}
+    .mm-chip em{font-style:normal;font-size:8px;color:var(--ink-muted)}
+    .mm-chip.short{border-color:var(--bad)}
+    .mm-chip.short em{color:var(--bad)}
+    .mm-chip.out{background:#e6f6ec;border-color:var(--good)}
+    .mm-dot{width:12px;height:12px;background:#9ccc65;border:2px solid var(--border-dark);flex:none}
+    .btn.mm-big{display:block;width:100%;margin-top:8px;padding:11px 10px;font-size:11px}
+    .mm-inserted{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;padding:7px 9px;border:2px dashed var(--good);color:var(--good);font-size:9.5px}
+    .mm-small{font-size:8.5px;line-height:1.7;color:var(--ink-muted);margin:8px 0 0}
+    .mm-tip{margin-top:10px;padding:9px 11px;background:#ece4d0;border-left:5px solid var(--accent);font-size:9.5px;line-height:1.8}
   </style>
 </head>
 <body>
@@ -1867,11 +1881,11 @@
       O: "#141026", // Dark outline
       W: "#f8fafc", // Pure white pressurized suit
       w: "#cbd5e1", // Silver-gray suit shading
-      G: "#bae6fd", // Glass helmet tint
-      g: "#7dd3fc", // Helmet inner rim
-      H: "#1c192b", // Black hair inside helmet
-      S: "#f5c69c", // Warm face skin inside helmet
-      E: "#2ea84a", // Green eyes
+      G: "#e6edf7", // White helmet shell
+      g: "#aab6cc", // Helmet inner rim
+      H: "#121a36", // Dark visor top
+      S: "#1e2b52", // Dark visor glass
+      E: "#8fd3ff", // Visor reflection
       B: "#2563eb", // Mission blue collar & chest trim
       A: "#f97316", // RE:SOURCE orange mission patch & stripes
       K: "#475569"  // Lunar boot soles & pack trim
@@ -2146,11 +2160,11 @@
         O: "#141026",
         W: "#f8fafc",
         w: "#cbd5e1",
-        G: "#bae6fd",
+        G: "#e6edf7",
         V: visorColor,
-        H: hairColor,
-        S: "#e8b48a",
-        E: "#1e293b",
+        H: "#121a36",
+        S: "#1e2b52",
+        E: "#8fd3ff",
         T: trimColor,
         K: "#475569"
       };
@@ -3309,22 +3323,38 @@
       rect(frame, x + w / 2 - 1, y, 2, h); rect(frame, x, y + h / 2 - 1, w, 2);
       rect("rgba(255,255,255,.1)", x + 3, y + 3, 6, h - 6);
     }
+    // Draw a bright two-pane classroom window, including sky, clouds, grass, and wooden dividers.
+      rect("#8a6a48", x - 3, y - 3, w + 6, h + 6);
+      cx.save(); cx.beginPath(); cx.rect(x, y, w, h); cx.clip();
+      sky("#7ec4f5", "#e2f4ff", y + h);
+      glow(x + w * .75, y + h * .25, 40, "rgba(255,244,190,.95)", .9);
+      rect("#fff7c8", x + w * .75 - 5, y + h * .25 - 5, 10, 10);
+      rect("rgba(255,255,255,.92)", x + 6, y + h * .5, 16, 4); rect("rgba(255,255,255,.92)", x + 10, y + h * .5 - 3, 9, 3);
+      rect("rgba(255,255,255,.92)", x + 28, y + h * .22, 14, 3);
+      rect("#6fae5a", x, y + h - 9, w, 9); rect("#5a9a4a", x, y + h - 4, w, 4);
+      cx.restore();
+      rect("#8a6a48", x + w / 2 - 1, y, 2, h); rect("#8a6a48", x, y + h / 2 - 1, w, 2);
+    }
     const SCENES = {
       classroom(t) {
-        cx.fillStyle = grad(0, 0, 0, 118, ["#4a5784", "#2b3459"]); cx.fillRect(0, 0, W, 118);
-        for (let x = 0; x < W; x += 24) rect("rgba(255,255,255,.05)", x, 0, 1, 118);
-        rect("#1c2140", 0, 112, W, 6);
-        cx.fillStyle = grad(0, 118, 0, H, ["#7d8fb5", "#4b5a82"]); cx.fillRect(0, 118, W, H - 118);
-        for (let y = 118; y < H; y += 10) rect("rgba(255,255,255,.07)", 0, y, W, 1);
-        windowFrame(172, 18, 86, 62, t);
-        cx.fillStyle = "rgba(190,210,255,.10)"; cx.beginPath(); cx.moveTo(172, 80); cx.lineTo(258, 80); cx.lineTo(236, 150); cx.lineTo(120, 150); cx.fill();
-        rect("#6b4a2b", 16, 24, 118, 62); rect("#1f4a3c", 20, 28, 110, 54);
-        cx.strokeStyle = "rgba(255,255,255,.8)"; cx.lineWidth = 1; cx.beginPath(); cx.arc(48, 52, 12, 0, 7); cx.stroke(); cx.beginPath(); cx.arc(86, 62, 5, 0, 7); cx.stroke();
-        cx.beginPath(); cx.moveTo(60, 50); cx.quadraticCurveTo(72, 36, 84, 56); cx.stroke();
-        rect("rgba(255,255,255,.75)", 28, 72, 40, 2); rect("rgba(255,255,255,.75)", 100, 40, 20, 2); rect("rgba(255,255,255,.75)", 100, 46, 14, 2);
-        rect("#c9ccd8", 20, 82, 110, 3);
-        [[16, 132], [206, 134], [250, 128]].forEach(([x, y]) => { rect("#2a2147", x, y + 10, 40, 4); rect("#9a6a3a", x, y, 40, 8); rect("#bb8a4e", x, y, 40, 2); rect("#2a2147", x + 3, y + 14, 3, 12); rect("#2a2147", x + 34, y + 14, 3, 12); });
-        glow(70, 8, 70, "rgba(255,226,160,.6)", .25 + .03 * Math.sin(t / 300));
+        cx.fillStyle = grad(0, 0, 0, 118, ["#d4e3f0", "#aac4dc"]); cx.fillRect(0, 0, W, 118);
+        for (let x = 0; x < W; x += 24) rect("rgba(255,255,255,.2)", x, 0, 1, 118);
+        rect("#7a5a3a", 0, 108, W, 10); rect("#9a7650", 0, 108, W, 2);
+        cx.fillStyle = grad(0, 118, 0, H, ["#cc9d66", "#a8773f"]); cx.fillRect(0, 118, W, H - 118);
+        for (let y = 118; y < H; y += 8) rect("rgba(70,40,15,.25)", 0, y, W, 1);
+        for (let y = 118, r = 0; y < H; y += 8, r++) for (let x = (r * 29) % 44; x < W; x += 44) rect("rgba(70,40,15,.2)", x, y, 1, 8);
+        dayWindow(150, 14, 52, 58); dayWindow(214, 14, 52, 58);
+        cx.fillStyle = "rgba(255,240,190,.2)";
+        cx.beginPath(); cx.moveTo(150, 72); cx.lineTo(202, 72); cx.lineTo(190, 150); cx.lineTo(100, 150); cx.fill();
+        cx.beginPath(); cx.moveTo(214, 72); cx.lineTo(266, 72); cx.lineTo(288, 150); cx.lineTo(236, 150); cx.fill();
+        rect("#6b4a2b", 12, 20, 122, 66); rect("#1f4a3c", 16, 24, 114, 58); rect("#2a6350", 16, 24, 114, 3);
+        cx.strokeStyle = "rgba(255,255,255,.85)"; cx.lineWidth = 1;
+        cx.beginPath(); cx.arc(42, 52, 12, 0, 7); cx.stroke(); cx.beginPath(); cx.arc(92, 44, 5, 0, 7); cx.stroke();
+        cx.setLineDash([2, 3]); cx.beginPath(); cx.ellipse(66, 56, 38, 14, -.2, 0, 7); cx.stroke(); cx.setLineDash([]);
+        rect("rgba(255,255,255,.8)", 24, 70, 36, 2); rect("rgba(255,255,255,.8)", 84, 62, 30, 2); rect("rgba(255,255,255,.8)", 84, 68, 20, 2);
+        rect("#d8dce6", 16, 82, 114, 3); rect("#fff", 30, 80, 6, 2);
+        [[14, 134], [206, 136], [250, 130]].forEach(([x, y]) => { rect("#5a3a22", x, y + 10, 40, 4); rect("#b8864a", x, y, 40, 8); rect("#d8a468", x, y, 40, 2); rect("#5a3a22", x + 3, y + 14, 3, 12); rect("#5a3a22", x + 34, y + 14, 3, 12); });
+        glow(230, 8, 90, "rgba(255,236,170,.8)", .3);
       },
       street(t) {
         sky("#1a1745", "#e0713f", 108); stars(t, 60, .8); moon(212, 52, 26);
@@ -3336,15 +3366,24 @@
         [30, 150, 270].forEach(x => { rect("#0e0b24", x, 60, 3, 52); rect("#0e0b24", x - 7, 58, 14, 3); glow(x + 1, 62, 36, "rgba(255,214,120,.9)", .65); rect("#ffe9a8", x - 5, 61, 10, 3); });
       },
       bedroom(t) {
-        cx.fillStyle = grad(0, 0, 0, 118, ["#2e2860", "#221c4a"]); cx.fillRect(0, 0, W, 118);
-        rect("#1a1438", 0, 112, W, 6);
-        cx.fillStyle = grad(0, 118, 0, H, ["#5b4c8a", "#3a2f64"]); cx.fillRect(0, 118, W, 42);
-        for (let y = 120; y < H; y += 9) rect("rgba(255,255,255,.06)", 0, y, W, 1);
-        windowFrame(26, 22, 80, 60, t, "#4a4290");
-        rect("#3b3566", 124, 30, 40, 52); rect("#e8654a", 136, 38, 16, 30); rect("#f6f4ec", 140, 30, 8, 10); rect("#4aa3e8", 140, 50, 8, 8);
-        [[200, 30], [214, 44], [232, 26], [246, 50], [262, 34], [196, 62], [270, 64], [240, 70]].forEach(([x, y], n) => { cx.globalAlpha = .5 + .5 * Math.sin(t / 600 + n); rect("#bfffa8", x, y, 3, 3); rect("#bfffa8", x - 1, y + 1, 5, 1); cx.globalAlpha = 1; });
-        rect("#1a1438", 176, 96, 104, 34); rect("#8f6fd8", 180, 92, 96, 30); rect("#b99cf0", 180, 92, 96, 5); rect("#f6f4ec", 182, 84, 34, 14); rect("#d9d2e6", 182, 84, 34, 3); rect("#6a4bb8", 230, 100, 46, 22);
-        rect("#2a2147", 140, 112, 26, 24); rect("#ffd466", 148, 100, 10, 10); glow(153, 104, 46, "rgba(255,210,120,.9)", .55);
+        cx.fillStyle = grad(0, 0, 0, 118, ["#3e6f7e", "#2f5766"]); cx.fillRect(0, 0, W, 118);
+        for (let x = 0; x < W; x += 16) rect("rgba(255,255,255,.05)", x, 0, 2, 118);
+        for (let n = 0; n < 26; n++) rect("rgba(20,50,60,.35)", (n * 53) % W, (n * 37) % 100, 5, 3);
+        rect("#2a1f33", 0, 110, W, 8); rect("#5a3a2a", 0, 108, W, 3);
+        cx.fillStyle = grad(0, 118, 0, H, ["#c27a3d", "#8f5326"]); cx.fillRect(0, 118, W, H - 118);
+        for (let y = 118; y < H; y += 7) rect("rgba(60,30,10,.35)", 0, y, W, 1);
+        for (let y = 118, r = 0; y < H; y += 7, r++) for (let x = (r * 23) % 40; x < W; x += 40) rect("rgba(60,30,10,.35)", x, y, 1, 7);
+        windowFrame(30, 20, 70, 60, t, "#7a4a2a"); rect("#b8503f", 22, 16, 12, 70); rect("#b8503f", 96, 16, 12, 70); rect("#d86a55", 22, 16, 3, 70);
+        rect("#5a3a2a", 122, 28, 34, 46); rect("#f2e6c9", 125, 31, 28, 40); rect("#e8654a", 130, 38, 18, 20); rect("#4aa3e8", 130, 62, 18, 6);
+        rect("#6b2f4a", 120, 140, 96, 16); rect("#8d4767", 124, 142, 88, 12);
+        rect("#4a2c1a", 176, 64, 104, 66); rect("#6a3f26", 176, 58, 8, 76); rect("#6a3f26", 272, 58, 8, 76);
+        rect("#d6e3f5", 184, 82, 88, 24); rect("#f6f8ff", 188, 76, 36, 16); rect("#e0e6f2", 188, 88, 36, 3); rect("#f6f8ff", 230, 76, 36, 16);
+        rect("#4f6fb8", 184, 98, 88, 30); rect("#6f8fd8", 184, 98, 88, 5); rect("#3d5a98", 184, 121, 88, 7);
+        for (let x = 192; x < 270; x += 14) rect("rgba(255,255,255,.12)", x, 103, 2, 18);
+        rect("#4a2c1a", 176, 128, 104, 8);
+        rect("#5a3a2a", 134, 102, 32, 34); rect("#7a5236", 134, 102, 32, 4); rect("#3a2418", 138, 114, 24, 2); rect("#3a2418", 138, 124, 24, 2);
+        rect("#3a2418", 148, 92, 4, 10); rect("#ffd466", 142, 78, 16, 14); rect("#fff0a8", 145, 81, 10, 7);
+        glow(150, 86, 56, "rgba(255,200,110,.9)", .4);
       },
       dream(t) {
         sky("#05061a", "#1b1f5a", H); stars(t, 130);
@@ -3357,16 +3396,72 @@
       black() { rect("#05060f", 0, 0, W, H); }
     };
     function sprite(k) { return PixelArt.sprites[k]; }
-    function drawChar(c, speaker, t) {
-      const spr = sprite(c.k); if (!spr) return;
-      const sc = c.sc || 6, w = spr.width * sc, h = spr.height * sc / 4 * 4;
-      const x = c.x, base = 112 + 1.5 * Math.sin(t / 700 + c.x);
-      const dim = speaker && c.who !== speaker;
-      glow(x, base - 2, 34, "rgba(0,0,0,.9)", .55);
-      cx.globalAlpha = dim ? .62 : 1;
-      cx.imageSmoothingEnabled = false;
-      cx.drawImage(spr, x - spr.width * sc / 8, base - spr.height * sc / 4, spr.width * sc / 4, spr.height * sc / 4);
-      cx.globalAlpha = 1;
+    // Paint a compact story character from pixel rectangles; kind selects the student or teacher palette.
+      const R = (c, dx, dy, w, h) => rect(c, x + dx, b + dy, w, h);
+      const rr = (c, dx, dy, w, h) => { R(c, dx + 1, dy, w - 2, h); R(c, dx, dy + 1, w, h - 2); };
+      const T = kind === "teacher", O = "#181228";
+      const skin = T ? "#c98b5b" : "#f1bf93", skinD = T ? "#a96d42" : "#d99b70";
+      R("rgba(0,0,0,.35)", -18, -2, 36, 4);
+      if (T) {
+        R("#6a3d1f", -13, -9, 12, 5); R("#6a3d1f", 1, -9, 12, 5);
+        R("#8d93a0", -13, -26, 26, 17); R("#6c7384", -1, -26, 2, 17); R("#6c7384", -13, -12, 26, 3);
+        R("#8a5a36", -15, -45, 30, 20); R("#6d4426", -15, -29, 30, 4); R("#a8734a", -11, -43, 5, 3);
+        R("#f6f6f6", -4, -45, 8, 14); R("#c0392b", -1, -43, 2, 12);
+        R("#8a5a36", -20, -44, 6, 16); R(skin, -20, -28, 6, 5);
+        R("#8a5a36", 14, -44, 6, 12); R(skin, 14, -32, 6, 5); R("#d33a3a", 13, -40, 11, 13); R("#9c2424", 13, -40, 2, 13); R("#fff", 16, -38, 7, 1); R("#fff", 16, -35, 7, 1);
+      } else {
+        R("#231a3c", -12, -5, 11, 5); R("#231a3c", 1, -5, 11, 5); R("#fff", -12, -8, 11, 3); R("#fff", 1, -8, 11, 3);
+        R("#e0a276", -9, -16, 6, 8); R("#e0a276", 3, -16, 6, 8);
+        R("#3b67c4", -13, -26, 26, 11); R("#27478f", -13, -18, 26, 3); R("#27478f", -1, -26, 2, 11);
+        R("#e85a5a", -14, -45, 28, 20); R("#ba3b3d", -14, -29, 28, 4); R("#ff8a80", -10, -43, 6, 3); R("#fff", -4, -45, 8, 3);
+        R("#e85a5a", -19, -44, 6, 12); R("#e85a5a", 13, -44, 6, 12); R(skin, -19, -32, 6, 6); R(skin, 13, -32, 6, 6);
+      }
+      R(skin, -4, -47, 8, 4);
+      R(skin, -18, -60, 3, 8); R(skin, 15, -60, 3, 8);
+      rr(O, -17, -70, 34, 30); rr(skin, -16, -69, 32, 28);
+      R(skinD, -16, -45, 32, 4);
+      if (T) {
+        rr("#b9bec9", -18, -75, 36, 13); R("#b9bec9", -19, -66, 4, 12); R("#b9bec9", 15, -66, 4, 12); R("#dde1ea", -10, -73, 10, 2);
+        R("#aeb3be", -15, -52, 30, 11); R(skin, -9, -50, 18, 3); R("#aeb3be", -9, -52, 18, 3); R("#8a4a3a", -3, -46, 6, 1);
+        [-11, 3].forEach((sx) => {
+          R("#7a4a24", sx - 1, -60, 10, 10); R("#e6f4ff", sx, -59, 8, 8); R(O, sx + 3, -57, 3, 3); R("#fff", sx + 1, -59, 2, 2);
+        });
+        R("#7a4a24", -2, -56, 4, 1); R("#9aa0ad", -11, -63, 8, 2); R("#9aa0ad", 3, -63, 8, 2);
+      } else {
+        const hc = "#1c192b";
+        rr(hc, -19, -76, 38, 17); R(hc, -22, -72, 6, 14); R(hc, 16, -72, 6, 14); R(hc, -13, -79, 10, 5); R(hc, 3, -79, 10, 5);
+        R("#3b3559", -10, -74, 6, 2); R("#3b3559", 4, -75, 6, 2);
+        R(hc, -16, -64, 32, 4); R(skin, -6, -64, 3, 2); R(skin, 6, -64, 3, 2);
+        [-11, 3].forEach((sx) => {
+          R(O, sx - 1, -58, 8, 1); R("#fff", sx, -57, 6, 8); R("#2ea84a", sx + 1, -56, 4, 6); R("#0d0a18", sx + 2, -55, 2, 4); R("#fff", sx + 1, -56, 2, 2);
+          R(hc, sx, -61, 6, 1);
+        });
+        R("#f08a7e", -14, -50, 4, 2); R("#f08a7e", 10, -50, 4, 2);
+        R("#b3473f", -3, -46, 6, 1); R("#b3473f", -4, -47, 1, 1); R("#b3473f", 3, -47, 1, 1);
+      }
+      R(skinD, -1, -52, 2, 2);
+    }
+    const CH_OFF = document.createElement("canvas"); CH_OFF.width = 80; CH_OFF.height = 90;
+    // Draw one story character and visually emphasize the current speaker.
+      if (c.who !== "teacher") {
+        const spr = PixelArt.sprites.kid_right_idle;
+        if (spr) {
+          cx.globalAlpha = speaker && c.who !== speaker ? .72 : 1;
+          rect("rgba(0,0,0,.35)", c.x - 14, 110, 28, 4);
+          cx.imageSmoothingEnabled = false;
+          cx.drawImage(spr, Math.round(c.x - spr.width), 112 - spr.height * 2, spr.width * 2, spr.height * 2);
+          cx.globalAlpha = 1;
+          return;
+        }
+      }
+      const real = cx, oc = CH_OFF.getContext("2d"), S = 0.68;
+      oc.clearRect(0, 0, 80, 90);
+      cx = oc; chibi(c.who === "teacher" ? "teacher" : "kid", 40, 84); cx = real;
+      real.globalAlpha = speaker && c.who !== speaker ? .72 : 1;
+      real.imageSmoothingEnabled = true;
+      real.drawImage(CH_OFF, Math.round(c.x - 40 * S), Math.round(112 - 84 * S), Math.round(80 * S), Math.round(90 * S));
+      real.imageSmoothingEnabled = false;
+      real.globalAlpha = 1;
     }
     function frame(ts) {
       if (!running) return;
@@ -3407,31 +3502,33 @@
       if (["Enter", " ", "e", "E", "ArrowRight"].includes(e.key)) { e.preventDefault(); e.stopImmediatePropagation(); next(); }
       else if (e.key === "Escape") { e.preventDefault(); e.stopImmediatePropagation(); finish(); }
     }
-    const K = (who, x, name) => ({ k: who === "kid" ? "kid_right_idle" : who === "teacher" ? "teacher" : who, x, sc: 8, who, name });
-    const KID = K("kid", 70), TEA = { ...K("teacher", 214), name: "Mr. Okafor" };
+    const KID = { who: "kid", x: 70 }, TEA = { who: "teacher", x: 214, name: "Mr. Okafor" };
     const NAR = (bg, text, chars) => ({ bg, text, chars });
     const SAY = (bg, who, text, chars, name) => ({ bg, who, text, chars, name });
     function script() {
       const cl = [KID, TEA];
+      const T = (text) => SAY("classroom", "teacher", text, cl, "Mr. Okafor");
       return [
-        { title: "RE:SOURCE", sub: "PROLOGUE — ROOM 204", bg: "black" },
-        NAR("classroom", "The last bell of the day. Golden evening light spills across Room 204.", []),
-        SAY("classroom", "teacher", "Before you go — one last question about our favorite neighbor in the sky.", cl, "Mr. Okafor"),
-        SAY("classroom", "teacher", "The Moon. Cold, dusty, silent... and the perfect place to learn how people might live far from home.", cl, "Mr. Okafor"),
-        SAY("classroom", "teacher", "So tell me: what does a crew need every single day to survive up there?", cl, "Mr. Okafor"),
+        { title: "RE:SOURCE", sub: "PROLOGUE - ROOM 204", bg: "black" },
+        NAR("classroom", "Monday, 8:15 a.m. Sunshine pours into Room 204. The morning bell has just rung.", []),
+        T("Good morning, everyone! Today's lesson is about our nearest neighbor in space: the Moon."),
+        T("Picture a small crew living up there. No shops, no rivers, no air to breathe. Everything has to be made, saved and shared."),
+        T("So here's my question. What does a crew need every single day to stay alive?"),
         { bg: "classroom", who: "kid", text: "Hmm... what do I say?", chars: cl, choices: [
-          { label: "\"Air, water, food... and power!\"", then: [SAY("classroom", "teacher", "Exactly! Oxygen, water, food and electricity. Four lifelines.", cl, "Mr. Okafor")] },
-          { label: "\"Pizza?\"", then: [SAY("classroom", "teacher", "Ha! Food, yes. Add air, water and power, and you have the full list.", cl, "Mr. Okafor")] } ] },
-        SAY("classroom", "teacher", "On the Moon, nothing is free. Waste one resource, and every other system starts to suffer.", cl, "Mr. Okafor"),
-        SAY("classroom", "kid", "Good thing I'll never actually have to live up there!", cl),
-        SAY("classroom", "teacher", "Never say never. Walk home safely — and get a good night's sleep.", cl, "Mr. Okafor"),
-        NAR("street", "Walking home, the Moon hung enormous over the rooftops.", []),
-        SAY("street", "kid", "Making your own oxygen every day? No thanks...", [{ ...KID, x: 120 }]),
-        SAY("street", "kid", "...But it looks so close tonight. Almost like it's waiting for someone.", [{ ...KID, x: 120 }]),
+          { label: "\"Air, water, food... and power!\"", then: [T("Exactly! Oxygen, water, food and electricity. We call them the four lifelines.")] },
+          { label: "\"Pizza?\"", then: [T("Ha! Food is on the list. Add air, water and electricity, and you have the four lifelines.")] } ] },
+        T("Here's the tricky part: they all depend on each other. Making oxygen takes water. Cleaning water takes power. Growing food takes both."),
+        SAY("classroom", "kid", "So it's like a giant puzzle where every piece touches the others?", cl),
+        T("Exactly. Engineers call it a closed loop, and people your age may be the ones to solve it."),
+        SAY("classroom", "kid", "Me? I'm just glad I'll never have to live up there!", cl),
+        T("Never say never. Now, open your notebooks!"),
+        NAR("street", "After school, the Moon was already out. A pale coin floating over the rooftops.", []),
+        SAY("street", "kid", "Making your own air every single day? No thanks...", [{ ...KID, x: 120 }]),
+        SAY("street", "kid", "...But what if I could do it? What would it take to keep four people alive?", [{ ...KID, x: 120 }]),
         NAR("bedroom", "Homework done. Lights low. Moonlight glowed through the window.", []),
-        SAY("bedroom", "kid", "Mission Control to Earth: one very sleepy student, going to bed.", [{ ...KID, x: 60 }]),
-        NAR("bedroom", "...Something is humming. Not the fridge. Not the street. Something far bigger.", []),
-        NAR("dream", "The ceiling fades. The walls dissolve. Stars slide past, faster and faster...", []),
+        SAY("bedroom", "kid", "Mission Control to Earth: one very sleepy student, heading to bed.", [{ ...KID, x: 60 }]),
+        NAR("bedroom", "...A low hum fills the room. Not the fridge. Not the street. Something much bigger.", []),
+        NAR("dream", "The ceiling fades. The walls dissolve. Stars stream past, faster and faster...", []),
         SAY("dream", "kid", "Wait... where did my bed go?!", [{ ...KID, x: 70 }])
       ];
     }
@@ -3567,15 +3664,12 @@
           speaker: "Commander Nova",
           portrait: "nova",
           lines: [
-            "Me: \"Excuse me... where am I?\"",
-            "Commander Nova: \"Oh, you're finally awake!\"",
-            "Me: \"What is this place? Why am I here?\"",
-            "Commander Nova: \"We're aboard the spacecraft heading to the Moon!\"",
+            "Me: \"Uh... where am I? And why am I wearing a spacesuit?!\"",
+            "Commander Nova: \"Easy, Junior Astronaut. You're aboard the RE:SOURCE, on our way to the Moon.\"",
             "Me: \"THE MOON?!\"",
-            "Commander Nova: \"Wait... don't tell me you forgot the mission.\"",
-            "Me: \"What mission?!\"",
-            "Commander Nova: \"Did you hit your head during the last training session?\"",
-            "Commander Nova: \"Listen carefully, Junior Astronaut: we have a 7-day lunar base mission ahead. Talk to the Engineer and Scientist, inspect the training machines, and let me know when you're ready!\""
+            "Commander Nova: \"Don't tell me training wiped your memory. You volunteered to run our lunar base for 7 days.\"",
+            "Commander Nova: \"Four crew members need air, water, food and power every single day. Your job is to keep all four from running out.\"",
+            "Commander Nova: \"Talk to our Engineer and our Scientist, try out the machines, then come back to me. After that, we land.\""
           ]
         });
       } else if (GameLogicService.isDay0Complete(s)) {
@@ -3583,16 +3677,16 @@
           speaker: "Commander Nova",
           portrait: "nova",
           lines: [
-            "\"Orientation complete! Our spacecraft is aligned for final lunar descent.\"",
-            "\"Click [ TIME SKIP ] whenever you're ready to land on the Moon and begin Day 1!\""
+            "\"Great work. You know the machines and you know the crew's needs. We're lined up for the final descent.\"",
+            "\"Press [ TIME SKIP ] when you're ready to land and begin Day 1!\""
           ],
           choices: [
             {
-              label: "[ TIME SKIP ] — Initiate Lunar Landing Sequence",
+              label: "[ TIME SKIP ] - Start the lunar landing",
               onSelect: () => this.triggerTimeSkipLanding()
             },
             {
-              label: "Keep exploring the spacecraft a little longer",
+              label: "I want to explore a little longer",
               onSelect: () => {}
             }
           ]
@@ -3602,8 +3696,8 @@
           speaker: "Commander Nova",
           portrait: "nova",
           lines: [
-            "\"You're in charge of operating the lunar base's life-support systems for 7 days.\"",
-            "\"Speak with the Engineer and Scientist and inspect the spacecraft machines to finish Day 0 orientation.\""
+            "\"Remember: you keep the base's life support running for 7 days.\"",
+            "\"Talk to the Engineer and the Scientist, and check at least three machines. Then we can land.\""
           ]
         });
       }
@@ -3617,10 +3711,11 @@
         speaker: "Engineer",
         portrait: "engineer",
         lines: [
-          "\"Careful with that helmet! You must've bumped it hard in the centrifuge simulator.\"",
-          "\"Here's your engineering refresher: Water Recycling uses 3 kWh Power + 3% Stamina to produce +10 L Water.\"",
-          "\"Oxygen Generation uses 2.25 L Water + 6 kWh Power + 3% Stamina to produce +4 kg Oxygen.\"",
-          "\"Solar arrays generate +25 kWh/day while base systems use -10 kWh/day (+15 kWh net). And Base Repair costs 10 kWh + 20% Stamina for +20% Integrity!\""
+          "\"Welcome back! Quick refresher. Every machine needs some inputs, like power or water, and gives you something useful in return.\"",
+          "\"The Water Recycler cleans used water. Put in 3 kWh of Power and 3% Stamina, and you get 10 L of Water.\"",
+          "\"The Oxygen Generator splits water to make air. It takes 2.25 L of Water, 6 kWh of Power and 3% Stamina, and gives 4 kg of Oxygen.\"",
+          "\"Solar panels add 25 kWh a day, but the base uses 10. That leaves +15 kWh. The Repair Unit costs 10 kWh and 20% Stamina, and restores 20% Base Integrity.\"",
+          "\"Tip: inserted inputs are set aside right away. Changed your mind? Press Take back and you get everything back.\""
         ]
       });
     },
@@ -3633,10 +3728,11 @@
         speaker: "Scientist",
         portrait: "scientist",
         lines: [
-          "\"Glad you're back on your feet! Here is how the Hydroponic Greenhouse works:\"",
-          "\"Grow Food requires 8 L Water, 8 kWh Power, 20% Stamina, 1 Seed, and 1 Nutrient Pack. Crops take 3 completed days to mature!\"",
-          "\"Once Mature, Harvest Food costs 23% Stamina and yields +15 FP (1 FP = 1,000 kcal).\"",
-          "\"Our 4-person crew consumes 15.14 L Water, 3.32 kg Oxygen, and 12.14 FP Food daily. Eating 2 FP or drinking 2 L restores +3% Stamina immediately!\""
+          "\"Hi there! Let me explain the greenhouse. Plants grow in a mist of water and nutrients. No soil needed.\"",
+          "\"To plant, insert 8 L of Water, 8 kWh of Power, 20% Stamina, 1 Seed and 1 Nutrient pack. Then wait 3 full days.\"",
+          "\"When the crop is ripe, harvesting costs 23% Stamina and gives 15 Food Points. One Food Point is about 1,000 calories.\"",
+          "\"Our crew of four uses roughly 15 L of Water, 3.3 kg of Oxygen and 12 Food Points every day. Keep every bar above zero!\"",
+          "\"When you're tired, visit the Galley. 2 Food or 2 L of Water gives you +3% Stamina right away.\""
         ]
       });
     },
@@ -4216,317 +4312,189 @@
       }
     }
 
+    /* ----- SIMPLE MACHINE MENU (one friendly layout for every machine) ----- */
+    // Shared kid-friendly labels connect each machine to its input costs, output, and survival purpose.
+      water: {
+        icon: "mach_water", title: "Water Recycling Machine", action: "recycleWater",
+        does: "Cleans used water so the crew can drink it again.",
+        why: "On the Moon there are no taps. Every drop gets cleaned and reused, so recycling keeps the whole crew alive.",
+        makes: [{ icon: "water", text: "+10 L Water" }], tutWhen: "Ready after you press END DAY."
+      },
+      oxygen: {
+        icon: "mach_oxygen", title: "Oxygen Generator", action: "generateOxygen",
+        does: "Uses electricity to split water into hydrogen and oxygen. The oxygen is what the crew breathes.",
+        why: "Nobody can breathe moon dust. Watch the Oxygen bar and top it up before it runs low.",
+        makes: [{ icon: "oxygen", text: "+4 kg Oxygen" }], tutWhen: "Ready after you press END DAY."
+      },
+      repair: {
+        icon: "mach_repair", title: "Base Repair Unit", action: "repairBase",
+        does: "Fixes cracks and leaks in the walls of the base.",
+        why: "Space rocks and huge temperature swings wear the base down. If Base Integrity reaches 0%, the mission is over.",
+        makes: [{ icon: "integrity", text: "+20% Base Integrity" }], tutWhen: "Ready after you press END DAY."
+      },
+      greenhouse: {
+        icon: "grow_bed", title: "Hydroponic Greenhouse", action: "growFood",
+        does: "Grows plants in a mist of water and nutrients. No soil needed.",
+        why: "This is the Moon's farm. Crops take 3 days to grow, so plant early and keep both beds busy.",
+        makes: [{ icon: "food", text: "+15 Food after 3 days" }], tutWhen: "The crop grows for 3 days, then you harvest it."
+      },
+      galley: {
+        icon: "mach_galley", title: "Crew Galley",
+        does: "The kitchen. Eat or drink to get your Stamina back.",
+        why: "Stamina is your energy. Every machine uses some, so a quick snack keeps you working.",
+        makes: [{ icon: "stamina", text: "+3% Stamina" }], tutWhen: "Works right away."
+      }
+    };
+
+    // Convert resource descriptions into consistent menu chips, highlighting shortages and outputs.
+      return list.map((i) => `<div class="mm-chip ${i.short ? "short" : ""} ${i.out ? "out" : ""}">${i.icon ? PixelArt.iconImg(i.icon, 16, 16) : `<span class="mm-dot"></span>`}<b>${i.text}</b>${i.have ? `<em>${i.have}</em>` : ""}</div>`).join("");
+    }
+
+    // Format action costs; tutorial mode omits live inventory while machine mode shows amounts and shortages.
+      return Object.entries(spec.costs).map(([k, v]) => {
+        if (k === "seeds" || k === "nutrients") {
+          const t = `${v} ${k === "seeds" ? "Seed" : "Nutrient pack"}`;
+          return bare ? { icon: null, text: t } : { icon: null, text: t, have: `have ${s.supplies[k]}`, short: s.supplies[k] < v };
+        }
+        const m = CONFIG.resources[k], u = m.unit === "%" ? "%" : ` ${m.unit}`;
+        const text = `${fmt(v)}${u} ${m.name}`;
+        return bare ? { icon: k, text } : { icon: k, text, have: `have ${fmt(s.res[k])}${u}`, short: s.res[k] < v };
+      });
+    }
+
+    // Render the shared machine dialog and reconnect its action, refund, alternate-bed, and close controls.
+      const s = GameState.get();
+      const btns = (c.buttons || []).map((b, n) => `<button class="btn mm-big" id="mm_b${n}" ${b.disabled ? "disabled" : ""}>${b.label}</button>`).join("");
+      const insHtml = (c.inserted || []).map((q) => `<div class="mm-inserted"><span>&#10004; Inputs inserted</span><button class="btn danger small" data-take="${q.queueId}">Take back</button></div>`).join("");
+      openModal(`
+        <div class="window">
+          <div class="win-header">
+            <h2 class="win-title">${PixelArt.iconImg(c.icon, 32, 22)}<span>${c.title}</span></h2>
+            <span class="status-pill ${c.pill.cls}">${c.pill.text}</span>
+          </div>
+          <p class="mm-does">${c.does}</p>
+          <div class="mm-cols">
+            <div class="panel-box">
+              <h3>Put in</h3>
+              ${mmChips(c.inputs)}${btns}${insHtml}
+              ${c.inputNote ? `<p class="mm-small">${c.inputNote}</p>` : ""}
+            </div>
+            <div class="panel-box">
+              <h3>You get</h3>
+              ${mmChips(c.outputs.map((o) => ({ ...o, out: true })))}
+              <p class="mm-small">${c.when}</p>
+            </div>
+          </div>
+          <div class="mm-tip">${c.why}</div>
+          <div class="msg-err" style="color:${c.err ? "var(--bad)" : "var(--good)"};">${c.msg || ""}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+            ${c.extra ? `<button class="btn secondary" id="mm_extra">${c.extra.label}</button>` : "<span></span>"}
+            <button class="btn secondary" id="mm_close">Close [ESC]</button>
+          </div>
+        </div>
+      `);
+      updateHUD();
+      (c.buttons || []).forEach((b, n) => bindBtn("mm_b" + n, () => {
+        const r = b.run();
+        r.ok ? AudioEngine.reserve() : AudioEngine.warn();
+        c.reopen(r.message, !r.ok);
+      }));
+      modalLayer.querySelectorAll("[data-take]").forEach((btn) => btn.addEventListener("click", () => {
+        if (GameLogicService.cancelQueuedAction(s, btn.getAttribute("data-take"))) {
+          AudioEngine.retrieve();
+          c.reopen("Inputs taken back. Everything was refunded.", false);
+        }
+      }));
+      if (c.extra) bindBtn("mm_extra", c.extra.run);
+      bindBtn("mm_close", closeModal);
+    }
+
     /* ----- DAY 0 SPACECRAFT MACHINE TUTORIAL MODAL ----- */
-    function openMachineTutorial(tutKey) {
+    // Record a Day 0 inspection and show a read-only explanation; the tutorial never spends resources.
       const s = GameState.get();
       s.storyFlags.inspectedMachines[tutKey] = true;
       updateHUD();
-
-      const infoMap = {
-        water: {
-          title: "Water Recycling Machine",
-          icon: "mach_water",
-          does: "Filters and purifies cabin wastewater back into clean drinking and electrolysis water.",
-          consumes: "3 kWh Power + 3% Player Stamina",
-          produces: "+10 L Water (Max 200 L)",
-          when: "Queued during the day; +10 L Water is added after clicking SIMULATE / END DAY."
-        },
-        oxygen: {
-          title: "Oxygen Generator",
-          icon: "mach_oxygen",
-          does: "Uses water electrolysis to generate breathable oxygen for the four-astronaut crew.",
-          consumes: "2.25 L Water + 6 kWh Power + 3% Player Stamina",
-          produces: "+4 kg Oxygen (Max 50 kg)",
-          when: "Queued during the day; +4 kg Oxygen is added after clicking SIMULATE / END DAY."
-        },
-        repair: {
-          title: "Base Integrity Repair Unit",
-          icon: "mach_repair",
-          does: "Repairs micrometeorite wear and thermal stress to keep Base Integrity above 0%.",
-          consumes: "10 kWh Power + 20% Player Stamina",
-          produces: "+20% Base Integrity (Max 100%)",
-          when: "Queued during the day; +20% Base Integrity applies after clicking SIMULATE / END DAY."
-        },
-        greenhouse: {
-          title: "Hydroponic Greenhouse",
-          icon: "grow_bed",
-          does: "Cultivates lunar crops in nutrient mist. Requires 3 full days to mature before harvesting.",
-          consumes: "Grow Food: 8 L Water + 8 kWh Power + 20% Stamina + 1 Seed + 1 Nutrient Pack. Harvest Food: 23% Stamina.",
-          produces: "+15 FP Food (1 FP = 1,000 kcal) upon harvesting a Mature crop.",
-          when: "Planting starts a 3-day growth timer. After 3 completed days, Harvest Food yields +15 FP after simulation."
-        },
-        galley: {
-          title: "Crew Galley (Eat & Drink)",
-          icon: "mach_galley",
-          does: "Provides immediate food rations and hydration to restore astronaut stamina.",
-          consumes: "Eat Food: 2 FP Food | Drink Water: 2 L Water",
-          produces: "+3% Player Stamina per ration or drink (Max 100%)",
-          when: "Takes effect IMMEDIATELY when clicked (cannot be undone)."
-        }
-      };
-
-      const item = infoMap[tutKey];
+      const info = MACHINE_INFO[tutKey];
+      const needs = tutKey === "galley"
+        ? [{ icon: "food", text: "2 Food" }, { icon: "water", text: "or 2 L Water" }]
+        : mmCosts(CONFIG.actions[info.action], s, true);
       openModal(`
-        <div class="window narrow">
+        <div class="window">
           <div class="win-header">
-            <h2 class="win-title">
-              ${PixelArt.iconImg(item.icon, 32, 22)}
-              <span>${item.title}</span>
-            </h2>
+            <h2 class="win-title">${PixelArt.iconImg(info.icon, 32, 22)}<span>${info.title}</span></h2>
             <span class="status-pill ready">DAY 0 TUTORIAL</span>
           </div>
-          <div class="panel-box" style="font-size:9.5px;line-height:1.8;">
-            <p><b>What it does:</b> ${item.does}</p>
-            <p><b>Resources & Stamina Consumed:</b> ${item.consumes}</p>
-            <p><b>Output Produced:</b> ${item.produces}</p>
-            <p><b>When Output Becomes Available:</b> ${item.when}</p>
+          <p class="mm-does">${info.does}</p>
+          <div class="mm-cols">
+            <div class="panel-box"><h3>Put in</h3>${mmChips(needs)}</div>
+            <div class="panel-box"><h3>You get</h3>${mmChips(info.makes.map((o) => ({ ...o, out: true })))}<p class="mm-small">${info.tutWhen}</p></div>
           </div>
+          <div class="mm-tip">${info.why}</div>
           <div style="display:flex;justify-content:flex-end;margin-top:10px;">
-            <button class="btn" id="tut_m_close">Got It!</button>
+            <button class="btn" id="tut_m_close">Got it!</button>
           </div>
         </div>
       `);
       bindBtn("tut_m_close", closeModal);
     }
 
-    /* ----- SHARED MACHINE ACTION MODAL (Water, Oxygen, Repair) ----- */
-    function openQueuedMachinePanel(actionId, feedbackMsg = "", isError = false) {
-      const s = GameState.get();
-      const spec = CONFIG.actions[actionId];
-      const powerOffline = spec.requiresPower && s.res.power <= 0;
-      const queuedCount = s.pendingQueue.filter((q) => q.actionId === actionId).length;
-
-      const costBadges = Object.entries(spec.costs).map(([k, req]) => {
-        const meta = CONFIG.resources[k];
-        return `<span class="cost-tag">${PixelArt.iconImg(k, 13, 13)} -${fmt(req)} ${meta.unit} ${meta.name}</span>`;
-      }).join("");
-
-      const iconMap = {
-        recycleWater: "mach_water",
-        generateOxygen: "mach_oxygen",
-        repairBase: "mach_repair"
-      };
-
-      openModal(`
-        <div class="window">
-          <div class="win-header">
-            <h2 class="win-title">
-              ${PixelArt.iconImg(iconMap[actionId], 32, 22)}
-              <span>${spec.machineName}</span>
-            </h2>
-            <span class="status-pill ${powerOffline ? "offline" : "ready"}">
-              ${powerOffline ? "OFFLINE (0 kWh)" : `OPERATIONAL (QUEUED: ${queuedCount})`}
-            </span>
-          </div>
-
-          <p style="font-size:9.5px;margin:0 0 10px 0;">${spec.description}</p>
-
-          <div class="grid-2">
-            <div class="panel-box">
-              <h3>Required Costs (Reserved Immediately)</h3>
-              <div class="cost-row">${costBadges}</div>
-              <p style="font-size:8.5px;color:var(--ink-muted);margin-top:8px;">
-                Costs are deducted immediately upon clicking CONFIRM and refunded if cancelled before simulation.
-              </p>
-            </div>
-            <div class="panel-box">
-              <h3>Expected Output (After SIMULATE)</h3>
-              <div class="cost-row">
-                <span class="cost-tag out">${spec.outputText}</span>
-              </div>
-              <p style="font-size:8.5px;color:var(--ink-muted);margin-top:8px;">
-                ${spec.tutorialWhen}
-              </p>
-            </div>
-          </div>
-
-          <div class="msg-err" style="color:${isError ? "var(--bad)" : "var(--good)"};">${feedbackMsg}</div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-            <button class="btn secondary" id="qm_queue">View Pending Queue (${s.pendingQueue.length})</button>
-            <div>
-              <button class="btn secondary" id="qm_close">Close [ESC]</button>
-              <button class="btn good" id="qm_confirm" ${powerOffline ? "disabled" : ""}>CONFIRM ACTION</button>
-            </div>
-          </div>
-        </div>
-      `);
-
-      updateHUD();
-      bindBtn("qm_queue", openPendingQueueModal);
-      bindBtn("qm_close", closeModal);
-      bindBtn("qm_confirm", () => {
-        const res = GameLogicService.queueAction(s, actionId, null);
-        if (res.ok) {
-          AudioEngine.reserve();
-          openQueuedMachinePanel(actionId, res.message, false);
-        } else {
-          AudioEngine.warn();
-          openQueuedMachinePanel(actionId, res.message, true);
-        }
+    /* ----- WATER / OXYGEN / REPAIR ----- */
+    // Show queued water, oxygen, or repair work with its reserved inputs and offline status.
+      const s = GameState.get(), spec = CONFIG.actions[actionId];
+      const key = { recycleWater: "water", generateOxygen: "oxygen", repairBase: "repair" }[actionId];
+      const info = MACHINE_INFO[key];
+      const off = spec.requiresPower && s.res.power <= 0;
+      const ins = s.pendingQueue.filter((q) => q.actionId === actionId);
+      openMachineMenu({
+        icon: info.icon, title: info.title, does: info.does, why: info.why, msg, err,
+        pill: off ? { text: "NO POWER", cls: "offline" } : ins.length ? { text: `WORKING x${ins.length}`, cls: "growing" } : { text: "IDLE", cls: "" },
+        inputs: mmCosts(spec, s), outputs: info.makes, when: info.tutWhen,
+        buttons: [{ label: ins.length ? "Insert inputs again" : "Insert inputs", disabled: off, run: () => GameLogicService.queueAction(s, actionId, null) }],
+        inserted: ins, reopen: (m, e) => openQueuedMachinePanel(actionId, m, e)
       });
     }
-
     function openWaterPanel()  { openQueuedMachinePanel("recycleWater"); }
     function openOxygenPanel() { openQueuedMachinePanel("generateOxygen"); }
     function openRepairPanel() { openQueuedMachinePanel("repairBase"); }
 
-    /* ----- HYDROPONIC GREENHOUSE PANEL (Grow Food & Harvest Food) ----- */
-    function openGreenhousePanel(bedIndex, feedbackMsg = "", isError = false) {
-      const s = GameState.get();
-      const bed = s.cropBeds[bedIndex];
-      const growSpec = CONFIG.actions.growFood;
-      const harvSpec = CONFIG.actions.harvestFood;
-
-      const isEmpty = bed.status === "Empty";
-      const isGrowing = bed.status === "Growing";
-      const isMature = bed.status === "Mature";
-
-      const alreadyGrowQueued = s.pendingQueue.some((q) => q.actionId === "growFood" && q.bedIndex === bedIndex);
-      const alreadyHarvQueued = s.pendingQueue.some((q) => q.actionId === "harvestFood" && q.bedIndex === bedIndex);
-
-      const growCostsHtml = `
-        <span class="cost-tag">${PixelArt.iconImg("water", 13, 13)} -8 L Water</span>
-        <span class="cost-tag">${PixelArt.iconImg("power", 13, 13)} -8 kWh Power</span>
-        <span class="cost-tag">${PixelArt.iconImg("stamina", 13, 13)} -20% Stamina</span>
-        <span class="cost-tag">Seeds: ${s.supplies.seeds} (Req: 1)</span>
-        <span class="cost-tag">Nutrients: ${s.supplies.nutrients} (Req: 1)</span>
-      `;
-
-      const harvCostsHtml = `
-        <span class="cost-tag">${PixelArt.iconImg("stamina", 13, 13)} -23% Stamina</span>
-        <span class="cost-tag out">${PixelArt.iconImg("food", 13, 13)} +15 FP Food (15,000 kcal)</span>
-      `;
-
-      let statusLabel = "EMPTY — READY TO PLANT";
-      let pillClass = "";
-      if (isGrowing) {
-        statusLabel = `GROWING (${bed.remainingDays} DAY${bed.remainingDays === 1 ? "" : "S"} REMAINING)`;
-        pillClass = "growing";
-      } else if (isMature) {
-        statusLabel = "MATURE — READY TO HARVEST!";
-        pillClass = "ready";
-      }
-
-      openModal(`
-        <div class="window">
-          <div class="win-header">
-            <h2 class="win-title">
-              ${PixelArt.iconImg("grow_bed", 32, 22)}
-              <span>${bed.name} — Hydroponic Greenhouse</span>
-            </h2>
-            <span class="status-pill ${pillClass}">${statusLabel}</span>
-          </div>
-
-          <div class="grid-2">
-            <div class="panel-box">
-              <h3>1. Grow Food (Plant Crop)</h3>
-              <p style="font-size:9px;">Plants seedlings in nutrient mist. Matures after <b>3 completed days</b>.</p>
-              <div class="cost-row">${growCostsHtml}</div>
-              <div style="margin-top:8px;">
-                <button class="btn good" id="gh_plant" ${!isEmpty || alreadyGrowQueued ? "disabled" : ""}>
-                  ${alreadyGrowQueued ? "PLANTING QUEUED" : "CONFIRM GROW FOOD"}
-                </button>
-              </div>
-            </div>
-
-            <div class="panel-box">
-              <h3>2. Harvest Food (Mature Crop)</h3>
-              <p style="font-size:9px;">Harvests mature crops for <b>+15 FP</b> and resets bed to Empty.</p>
-              <div class="cost-row">${harvCostsHtml}</div>
-              <div style="margin-top:8px;">
-                <button class="btn" id="gh_harvest" ${!isMature || alreadyHarvQueued ? "disabled" : ""}>
-                  ${alreadyHarvQueued ? "HARVEST QUEUED" : "CONFIRM HARVEST FOOD"}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="msg-err" style="color:${isError ? "var(--bad)" : "var(--good)"};">${feedbackMsg}</div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
-            <button class="btn secondary" id="gh_switch">Switch to ${bedIndex === 0 ? "Grow Bed B" : "Grow Bed A"}</button>
-            <button class="btn secondary" id="gh_close">Close [ESC]</button>
-          </div>
-        </div>
-      `);
-
-      updateHUD();
-      bindBtn("gh_switch", () => openGreenhousePanel(bedIndex === 0 ? 1 : 0));
-      bindBtn("gh_close", closeModal);
-      bindBtn("gh_plant", () => {
-        const res = GameLogicService.queueAction(s, "growFood", bedIndex);
-        if (res.ok) {
-          AudioEngine.reserve();
-          openGreenhousePanel(bedIndex, res.message, false);
-        } else {
-          AudioEngine.warn();
-          openGreenhousePanel(bedIndex, res.message, true);
-        }
-      });
-      bindBtn("gh_harvest", () => {
-        const res = GameLogicService.queueAction(s, "harvestFood", bedIndex);
-        if (res.ok) {
-          AudioEngine.reserve();
-          openGreenhousePanel(bedIndex, res.message, false);
-        } else {
-          AudioEngine.warn();
-          openGreenhousePanel(bedIndex, res.message, true);
-        }
+    /* ----- GREENHOUSE ----- */
+    // Explain the selected grow bed and offer plant, harvest, or switch-bed actions based on crop state.
+      const s = GameState.get(), bed = s.cropBeds[bedIndex], info = MACHINE_INFO.greenhouse;
+      const aid = bed.status === "Empty" ? "growFood" : bed.status === "Mature" ? "harvestFood" : null;
+      const ins = s.pendingQueue.filter((q) => q.bedIndex === bedIndex);
+      const other = bedIndex === 0 ? 1 : 0;
+      const left = `${bed.remainingDays} day${bed.remainingDays === 1 ? "" : "s"}`;
+      const pill = bed.status === "Growing" ? { text: `GROWING - ${left} LEFT`, cls: "growing" }
+        : bed.status === "Mature" ? { text: "READY TO HARVEST", cls: "ready" } : { text: "EMPTY", cls: "" };
+      openMachineMenu({
+        icon: info.icon, title: `${bed.name} - Greenhouse`, why: info.why, msg, err, pill,
+        does: aid === "growFood" ? "Plant a seed in the nutrient mist. It needs 3 full days to grow."
+          : aid === "harvestFood" ? "The crop is ripe! Harvest it to turn it into food."
+          : `Your crop is growing. Come back in ${left}.`,
+        inputs: aid ? mmCosts(CONFIG.actions[aid], s) : [],
+        outputs: aid === "harvestFood" ? [{ icon: "food", text: "+15 Food (15,000 kcal)" }]
+          : aid === "growFood" ? [{ icon: "food", text: "A crop that grows for 3 days" }] : [{ icon: "food", text: "+15 Food when ripe" }],
+        when: aid === "growFood" ? "Planting happens after END DAY. Then wait 3 days." : "Ready after you press END DAY.",
+        buttons: aid && !ins.length ? [{ label: aid === "growFood" ? "Insert inputs & plant" : "Insert inputs & harvest", run: () => GameLogicService.queueAction(s, aid, bedIndex) }] : [],
+        inserted: ins,
+        extra: { label: `Go to ${s.cropBeds[other].name}`, run: () => openGreenhousePanel(other) },
+        reopen: (m, e) => openGreenhousePanel(bedIndex, m, e)
       });
     }
 
-    /* ----- CREW GALLEY: IMMEDIATE EAT FOOD & DRINK WATER ----- */
-    function openGalleyPanel(feedbackMsg = "", isError = false) {
-      const s = GameState.get();
-      openModal(`
-        <div class="window narrow">
-          <div class="win-header">
-            <h2 class="win-title">
-              ${PixelArt.iconImg("mach_galley", 32, 22)}
-              <span>Crew Galley — Sustenance</span>
-            </h2>
-            <span class="status-pill ready">STAMINA: ${fmt(s.res.stamina)}%</span>
-          </div>
-
-          <p style="font-size:9px;line-height:1.7;">
-            Eating food or drinking water restores <b>+3% Stamina immediately</b> (capped at 100%). These actions take effect right away and cannot be undone.
-          </p>
-
-          <div class="grid-2">
-            <div class="panel-box" style="text-align:center;">
-              <h3>Eat Food Ration</h3>
-              <p style="font-size:9px;">Cost: <b>2 FP</b> (Avail: ${fmt(s.res.food)} FP)</p>
-              <p style="font-size:9px;color:var(--good);">Effect: <b>+3% Stamina</b></p>
-              <button class="btn good" id="gal_eat">EAT FOOD (-2 FP)</button>
-            </div>
-            <div class="panel-box" style="text-align:center;">
-              <h3>Drink Water</h3>
-              <p style="font-size:9px;">Cost: <b>2 L</b> (Avail: ${fmt(s.res.water)} L)</p>
-              <p style="font-size:9px;color:var(--good);">Effect: <b>+3% Stamina</b></p>
-              <button class="btn good" id="gal_drink">DRINK WATER (-2 L)</button>
-            </div>
-          </div>
-
-          <div class="msg-err" style="color:${isError ? "var(--bad)" : "var(--good)"};">${feedbackMsg}</div>
-
-          <div style="display:flex;justify-content:flex-end;margin-top:8px;">
-            <button class="btn secondary" id="gal_close">Close [ESC]</button>
-          </div>
-        </div>
-      `);
-
-      updateHUD();
-      bindBtn("gal_close", closeModal);
-      bindBtn("gal_eat", () => {
-        const res = GameLogicService.consumeSustenance(s, "eatFood");
-        res.ok ? AudioEngine.reserve() : AudioEngine.warn();
-        openGalleyPanel(res.message, !res.ok);
-      });
-      bindBtn("gal_drink", () => {
-        const res = GameLogicService.consumeSustenance(s, "drinkWater");
-        res.ok ? AudioEngine.reserve() : AudioEngine.warn();
-        openGalleyPanel(res.message, !res.ok);
+    /* ----- CREW GALLEY (instant) ----- */
+    // Offer an immediate food or water choice that restores stamina without entering the end-day queue.
+      const s = GameState.get(), info = MACHINE_INFO.galley;
+      openMachineMenu({
+        icon: info.icon, title: info.title, does: info.does, why: info.why, msg, err,
+        pill: { text: `STAMINA ${fmt(s.res.stamina)}%`, cls: "ready" },
+        inputs: [{ icon: "food", text: "2 Food", have: `have ${fmt(s.res.food)}`, short: s.res.food < 2 },
+                 { icon: "water", text: "2 L Water", have: `have ${fmt(s.res.water)}`, short: s.res.water < 2 }],
+        inputNote: "Pick one. It works right away.",
+        buttons: [{ label: "Eat a ration", run: () => GameLogicService.consumeSustenance(s, "eatFood") },
+                  { label: "Drink water", run: () => GameLogicService.consumeSustenance(s, "drinkWater") }],
+        outputs: info.makes, when: "Happens immediately and can't be undone.",
+        reopen: openGalleyPanel
       });
     }
 
@@ -5215,7 +5183,7 @@
             }
 
             const diag = dx !== 0 && dy !== 0 ? 0.7071 : 1;
-            const speed = 84 * dt * diag;
+            const speed = 106 * dt * diag;
 
             if (!isBlocked(s.x + dx * speed, s.y)) s.x += dx * speed;
             if (!isBlocked(s.x, s.y + dy * speed)) s.y += dy * speed;

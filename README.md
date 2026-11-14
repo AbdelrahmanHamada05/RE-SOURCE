@@ -1,165 +1,166 @@
-# RE:SOURCE — Junior Astronaut Mission Trainer
+# RE:SOURCE - Junior Astronaut Mission Trainer
 
-**RE:SOURCE** is a 2D top-down, pixel-art lunar-outpost management RPG designed to introduce children aged **7–12** to the challenges of living and working on the Moon.
+RE:SOURCE is a browser game about the systems and decisions involved in a simulated lunar outpost mission. The opening story leads into a no-consumption spacecraft tutorial (Day 0), then a seven-day survival simulation (Days 1-7).
 
-Players explore a lunar base, interact with its crew and equipment, make mission decisions, and keep the outpost operational through a **7-day simulated mission**.
+All resource values, crop yields, hazards, and mission outcomes are game parameters. They are not NASA operating procedures, measurements, or validated life-support guidance.
 
-> **Project note:** RE:SOURCE is an educational game. Its seven-day mission, resource reserves, action costs, event effects, and failure thresholds are gameplay abstractions—not an official NASA mission plan or a validated life-support design.
+## Run the game
 
-## Game concept
+Requirements: Node.js with npm.
 
-- Explore a lunar base from a top-down perspective.
-- Move the astronaut using **WASD** or the **arrow keys**.
-- Interact with machines and objects around the base.
-- Talk with Commander Nova and the crew through dialogue and choices.
-- Manage water, oxygen, food, power, crew stamina, and base integrity.
-- Respond to unexpected events and complete the seven-day mission.
+From the project folder, install the locked dependencies once and start the development server:
 
-The experience takes inspiration from the exploration and dialogue style of 2D RPGs while using an original RE:SOURCE setting, characters, and gameplay.
+    npm install
+    npm run dev
 
-## Mission structure
+Open http://localhost:3000. To make a production build, run npm run build, then npm run start.
 
-The mission lasts **7 in-game days**:
+The same Next.js project is in Desktop/re_source. The original working Git repository remains in Desktop/astra and its origin points to the GitHub repository RE-SOURCE.
 
-| Day | Mission focus |
+## What runs at the home page
+
+The canonical game is the complete, self-contained browser game in public/mission-trainer.html. Next.js serves files under public from the site root, so this file is available at /mission-trainer.html. The App Router home page in src/app/page.tsx fills the viewport with an iframe that opens that URL. The iframe keeps the original HTML, CSS, canvas art, and JavaScript together and avoids rewriting the game engine during the migration.
+
+The root layout in src/app/layout.tsx supplies the document metadata and global stylesheet. The app page is a small React server component; the game itself runs in the browser from the static HTML file.
+
+## Main game flow
+
+1. The visual-novel opening introduces the lunar-resource question in the classroom, continues through the trip home and bedroom, then transitions into the spacecraft.
+2. Day 0 is a safe tutorial. The player speaks with Commander Nova, the Engineer, and the Scientist and inspects machines. No daily crew usage, crop growth, events, or survival failure is applied during this phase.
+3. The lunar landing starts Day 1. The player explores the base and plans machine actions while monitoring the HUD.
+4. Ending each day applies the queued actions and daily simulation, produces a report, resolves the day's configured event, and advances the mission.
+5. Reaching the end of Day 7 completes the mission if the survival checks still pass. Critical depletion or habitat failure can end it earlier.
+
+The current Day 0 completion check requires all three crew conversations and inspection of at least three machines. The HUD tracks inspection progress across the five tutorial machines.
+
+## Controls and interface
+
+- Arrow keys move the astronaut through the rooms; movement is collision-checked against walls, furniture, and room bounds.
+- Enter opens the nearby object or machine. The interaction prompt also works with a pointer click.
+- Enter, Space, or Right Arrow advances dialogue; Escape can skip the opening sequence.
+- Machine dialogs show what a machine does, what goes in, what comes out, and when an output becomes available.
+- Queued inputs are reserved when an action is inserted. The pending-action dialog lets the player cancel queued work and refund its reserved costs.
+- The Crew Galley is immediate: consuming food or water restores stamina at once and cannot be undone.
+- Day 0 tutorials are informational and do not reserve or consume supplies.
+
+The updated machine interface uses the shared MACHINE_INFO descriptions and the shared machine-menu renderer. Resource chips identify inputs, shortages, and outputs. Greenhouse dialogs reflect each bed's Empty, Growing, or Mature state and allow switching between the two beds.
+
+## Game balance and resource model
+
+The main HTML game defines its settings in the JavaScript CONFIG object near the beginning of its script. These are the current starting values and limits:
+
+| Resource | Start | Maximum | Unit |
+| --- | ---: | ---: | --- |
+| Water | 100 | 150 | L |
+| Oxygen | 28 | 40 | kg |
+| Food | 80 | 120 | FP |
+| Power | 60 | 100 | kWh |
+| Base integrity | 100 | 100 | % |
+| Crew stamina | 100 | 100 | % |
+
+Food Points are a game unit; 1 FP is described as approximately 1,000 kcal. The simulated crew of four uses 15.14 L of water, 3.32 kg of oxygen, and 12.14 FP of food per day. Solar generation adds 25 kWh per day and the base load uses 10 kWh, for a nominal net gain of 15 kWh before machine actions and events. The greenhouse begins with six seeds and six nutrient packs.
+
+### Machine and crew actions
+
+| Action | Inputs | Result | Timing |
+| --- | --- | --- | --- |
+| Recycle water | 3 kWh Power, 3% Stamina | +10 L Water | After end-day simulation |
+| Generate oxygen | 2.25 L Water, 6 kWh Power, 3% Stamina | +4 kg Oxygen | After end-day simulation |
+| Repair base | 10 kWh Power, 20% Stamina | +20% Base Integrity, capped at 100% | After end-day simulation |
+| Plant a crop | 8 L Water, 8 kWh Power, 20% Stamina, 1 Seed, 1 Nutrient pack | Starts a 3-day grow timer | After end-day simulation |
+| Harvest a mature crop | 23% Stamina | +15 FP Food; bed returns to Empty | After end-day simulation |
+| Eat a ration | 2 FP Food | +3% Stamina | Immediate |
+| Drink water | 2 L Water | +3% Stamina | Immediate |
+
+The two greenhouse beds track independent crop stages. Each day's simulation advances growing crops. Queued actions reserve costs when added; cancelling one refunds its reserved costs. The galley actions are immediate and follow separate validation rules.
+
+The CONFIG object also contains daily events, random disaster definitions, resource caps, machine requirements, and depletion penalties. The exact event effects and thresholds are gameplay balancing values and may change as the game is tuned.
+
+## JavaScript code map
+
+All canonical game logic is in the inline script of public/mission-trainer.html. The file is an ordinary HTML document and can also be opened directly in a browser, although running the Next.js app is the intended project workflow.
+
+| Module or function | Responsibility |
 | --- | --- |
-| 1 | Meet the crew and learn the base systems |
-| 2 | Understand water and oxygen management |
-| 3 | Manage food production and power |
-| 4 | Respond to an unexpected event |
-| 5 | Diagnose and repair equipment |
-| 6 | Handle a major survival challenge |
-| 7 | Complete the final mission assessment |
+| fmt | Displays resource amounts without unnecessary decimal zeroes. |
+| CONFIG | Central source for resources, units, starting amounts, machine costs and yields, crop timing, crew usage, power balance, and events. |
+| GameState | Creates and owns the current mission state, validates saved state, resets or restores a game, and serializes it for local storage. |
+| GameLogicService | Applies Day 0 rules, sustenance, action validation and reservation, refunds, crop progression, daily consumption, events, survival checks, and victory/failure rules. |
+| AudioEngine | Creates short interface, movement, interaction, and transition sounds with the Web Audio API. |
+| PixelArt | Draws and caches pixel-art sprites, character variants, machines, room props, and small HUD icons on canvases. |
+| RoomDefinitions | Describes the classroom, street, bedroom, spacecraft, lunar base, objects, doors, interaction positions, and room transitions. |
+| DialogueSystem | Displays speaker dialogue, advances lines, presents choices, and handles keyboard input for conversations. |
+| VN | Draws the illustrated opening with a canvas, animated scene backgrounds, character sprites, choice branches, typewriter dialogue, and skip behavior. |
+| StoryManager | Moves the story between Earth, sleep, spacecraft Day 0, landing, survival, and mission outcomes; it also tracks tutorial conversations. |
+| Renderer | Draws the title screen, rooms, astronaut, lunar surface, HUD scene art, transitions, cutscenes, and overlays. |
+| UIManager | Builds the HUD, menus, resource chips, machine tutorials, pending-action queue, end-day report, settings, and victory/failure dialogs. |
+| GameController | Reads movement and interaction input, applies collision checks, selects the nearest interactable object, updates animations, and runs the animation loop. |
 
-The seven-day timeline is a game progression system. It does not attempt to reproduce the Moon's actual day/night cycle.
+The updated story artwork adds a bright two-pane classroom window and a warmer bedroom scene. The updated character renderer paints the student and teacher from pixel blocks, and the suit palette gives the helmet a darker visor with a light reflection. These are visual changes; they do not alter the resource simulation.
 
-## Core resources
+The new shared machine menu is built from MACHINE_INFO, mmChips, mmCosts, and openMachineMenu. The same layout is used by water, oxygen, repair, greenhouse, and galley panels so each machine explains its purpose, inputs, outputs, timing, status, and available actions consistently.
 
-The player monitors:
+## State, saves, JSON, and configuration files
 
-- **Water** — crew needs and selected base operations.
-- **Oxygen** — breathable oxygen reserves.
-- **Food** — represented by Food Points (FP).
-- **Power** — energy available to operate equipment.
-- **Crew stamina** — the crew's overall condition in the simulation.
-- **Base integrity** — the condition of the lunar outpost.
+There is no separate JSON file containing the main game's story or balance settings. The main game uses the JavaScript CONFIG object for those settings. Saves are JSON text stored in the browser's localStorage under RE:SOURCE_SAVE_V1. The save includes the mission phase and day, current room and astronaut position, resources, tutorial/story flags, crop beds, pending actions, and the latest report. The loader parses and checks required resource values, room identity, and array state before accepting a saved game.
 
-### Provisional gameplay starting balance
+The root project configuration files are JSON or TypeScript configuration, not game data:
 
-The following values are initial design proposals for balancing and playtesting. They are not NASA-prescribed reserves.
+| File | Purpose |
+| --- | --- |
+| package.json | Package name, installed runtime/development dependencies, and npm scripts. |
+| package-lock.json | Exact dependency versions and dependency tree used by npm install. |
+| tsconfig.json | TypeScript compiler options for the Next.js app. |
+| next.config.ts | Next.js project settings. |
+| eslint.config.mjs | Lint rules. |
+| .gitignore | Excludes dependencies, build output, local secrets, and generated files from Git. |
 
-| Resource | Proposed starting value | Proposed maximum |
-| --- | ---: | ---: |
-| Water | 120 L | 200 L |
-| Oxygen | 30 kg | 50 kg |
-| Food | 100 FP | 150 FP |
-| Power | 120 kWh | 200 kWh |
-| Crew stamina | 100% | 100% |
-| Base integrity | 100% | 100% |
+JSON syntax does not allow comments. The package and TypeScript JSON files are therefore explained here instead of being edited into invalid JSON.
 
-**Food Point definition:** 1 FP represents 1,000 kcal in the game model.
+## React code and retained prototypes
 
-### Player actions
+The canonical game is vanilla JavaScript in the HTML file, not a React rewrite. React and Next.js provide the project shell and routes.
 
-Proposed actions include:
+- src/app/page.tsx: React server component that embeds the canonical HTML game in a full-viewport iframe.
+- src/app/layout.tsx: Root App Router layout and browser metadata.
+- src/app/prototype/page.tsx: Preserved interactive React prototype available at /prototype. It contains the separate React story presentation and mounts the React lunar game and ship tutorial.
+- src/app/game.tsx: React implementation of the prototype's seven-day base game, including movement, stations, action queue, daily simulation, reports, and mission state.
+- src/app/gameConfig.ts: Typed TypeScript gameplay configuration for that React prototype. Its parameter values are separate from the canonical HTML game's CONFIG values.
+- src/app/ship.tsx: React Day 0 ship walkthrough and landing sequence used by the prototype.
+- design-preview/: Separate room-based Next.js visual prototype and its own settings. It is kept as a source project and is not loaded by the canonical home page.
 
-- Recycle water.
-- Generate oxygen.
-- Grow food.
-- Repair the base.
-- Rest the crew.
-- Respond to mission events.
+Keep the distinction clear when editing balance: the main game uses public/mission-trainer.html; the React prototype uses src/app/gameConfig.ts. Updating one does not automatically update the other.
 
-Action yields and energy/resource costs are tunable gameplay parameters and must be playtested before being treated as balanced.
+## Editing and commenting code
 
-Crew consumption is intended to be simulated automatically over each game day. The player influences survival through resource planning and mission decisions rather than manually feeding each astronaut.
+The HTML file already groups the engine into named modules and documents many rules next to their implementation. New comments explain the revised visual helpers and the shared machine-menu renderer. The README maps each major module and describes the resource and save data flow.
 
-## Events and mission outcomes
+For additional source comments, use JavaScript // or /* ... */ comments inside the script, CSS comments inside the style block, and HTML comments in markup. Do not put comments inside a JavaScript template string unless the comment is meant to be rendered as part of the generated HTML. Do not add comment syntax to JSON files; the JSON parser will reject it.
 
-Possible events include solar storms, water leaks, equipment malfunctions, dust accumulation, greenhouse problems, successful harvests, and quiet days.
+## Testing and build
 
-Events create decisions and consequences within the game simulation. Any event penalties or crew effects are gameplay values, not predictions of actual astronaut exposure or health outcomes.
+The verified production build command is:
 
-The mission can be put at risk by resource depletion, loss of crew stamina, or critical damage to the base. Exact thresholds are balancing parameters and may change during development.
+    npm run build
 
-## Technology
+The project also exposes npm run lint. Values in the game are fictional and should be tested as gameplay rules, not interpreted as engineering guidance.
 
-The planned MVP uses a frontend-only architecture:
+## Project tree
 
-- **Next.js**
-- **React**
-- **TypeScript**
-- **Tailwind CSS**
-- **Local storage** for local game saves
+    public/mission-trainer.html   Canonical game source and browser runtime
+    src/app/page.tsx              Next.js home page and full-screen game iframe
+    src/app/layout.tsx            Root layout and metadata
+    src/app/prototype/page.tsx     Preserved React prototype route
+    src/app/game.tsx               React prototype lunar game
+    src/app/gameConfig.ts          React prototype tuning data
+    src/app/ship.tsx               React prototype Day 0 ship tutorial
+    design-preview/                Independent room-based React prototype
+    package.json                  Package scripts and dependency names
+    package-lock.json             Exact npm dependency lock
+    next.config.ts                Next.js configuration
+    tsconfig.json                 TypeScript configuration
+    eslint.config.mjs              Lint configuration
+    .gitignore                     Git exclusions
+    README.md                      Project guide
 
-The game engine is planned as TypeScript modules for resource calculations, actions, crew simulation, daily progression, random events, and mission outcomes.
-
-A separate backend is not required for the initial single-player MVP. NASA data integrations, if used, should be optional and have fallback behavior so the core game remains playable if an external service is unavailable.
-
-## Planned project structure
-
-```text
-src/
-├── app/
-│   └── page.tsx
-├── components/
-│   ├── GameWorld.tsx
-│   ├── ResourceHUD.tsx
-│   ├── DialogueBox.tsx
-│   ├── ActionMenu.tsx
-│   └── MissionReport.tsx
-├── game/
-│   ├── engine.ts
-│   ├── resources.ts
-│   ├── actions.ts
-│   ├── events.ts
-│   ├── crew.ts
-│   └── mission.ts
-├── data/
-│   └── nasaEvents.ts
-└── utils/
-    └── saveGame.ts
-```
-
-This is the proposed organization; files may be added, removed, or renamed as implementation evolves.
-
-## Scientific references and data context
-
-The project may use public educational and scientific resources to inform its learning content and selected event context:
-
-- [NASA API](https://api.nasa.gov/)
-- [NASA DONKI — Space Weather Database](https://ccmc.gsfc.nasa.gov/tools/DONKI/)
-- [ISS RadLab](https://visualization.osdr.nasa.gov/radlab/gui/data-api/)
-- [NASA Open Science Data Repository](https://osdr.nasa.gov/)
-- [NASA Environmental Control and Life Support Systems (ECLSS)](https://www.nasa.gov/reference/environmental-control-and-life-support-systems-eclss/)
-- [NASA Human-System Standard](https://www.nasa.gov/reference/7-0-habit-ability-functions-vol-2/)
-- [NASA Lunar Surface Innovation Initiative](https://www.nasa.gov/lunar-surface-technology/)
-- [Canadian Space Agency — Food Production Toolkit](https://www.asc-csa.gc.ca/eng/youth-educators/toolkits/food-production/)
-
-**Scientific integrity:** NASA/ISS data and educational references provide context; they do not automatically validate RE:SOURCE's lunar scenarios or gameplay parameters. ISS radiation measurements are not lunar-surface exposure measurements, space-weather classifications are not direct astronaut dose measurements, and educational crop examples are not guaranteed lunar crop yields. The game should distinguish sourced reference information, engineering assumptions, and invented gameplay values.
-
-## Getting started
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-Edit `src/app/page.tsx` to start changing the application. The page updates as you edit.
-
-## Project status
-
-RE:SOURCE is under development. The seven-day mission structure and resource model are design proposals that require implementation, simulation, and playtesting.
-
----
-
-Built for **NASA Space Apps Challenge Cairo 2026**.
+Built for NASA Space Apps Challenge Cairo 2026.
