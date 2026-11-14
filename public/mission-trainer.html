@@ -1392,9 +1392,6 @@
 
     consumedLog.push(`Crew Food Use: -${reqF} FP`);
 
-      // Oxygen consumption (lethal if reaches 0)
-      state.res.oxygen = this.clamp(state.res.oxygen - reqO, 0, CONFIG.resources.oxygen.max);
-      consumedLog.push(`Crew Oxygen Use (4 Astronauts): -${reqO} kg`);
 
 
       // STEP 4: Crop Growth
@@ -1444,7 +1441,7 @@
       // SEVERE DISASTER CONSEQUENCES (Days 3–7)
       if (dayNum >= 3) {
         const integrityDamage = 25;
-        const staminaDamage = 30;
+        const staminaDamage = 25;
 
         state.res.integrity = this.clamp(
           state.res.integrity - integrityDamage,
